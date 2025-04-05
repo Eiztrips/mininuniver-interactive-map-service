@@ -7,6 +7,11 @@ plugins {
 group = "org.mininuniver"
 version = "0.0.1-SNAPSHOT"
 
+ext {
+    set("author", "Eiztrips")
+    set("email", "eiztrips.dev@yandex.ru")
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
