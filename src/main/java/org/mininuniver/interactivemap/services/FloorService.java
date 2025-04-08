@@ -19,18 +19,16 @@
 
 package org.mininuniver.interactivemap.services;
 
-import jakarta.annotation.PostConstruct;
 import org.mininuniver.interactivemap.dto.FloorDataDTO;
 import org.mininuniver.interactivemap.models.*;
 import org.mininuniver.interactivemap.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MapService {
+public class FloorService {
 
     private final FloorRepository floorRepository;
     private final RoomRepository roomRepository;
@@ -39,16 +37,14 @@ public class MapService {
     private final NodeRepository nodeRepository;
 
     @Autowired
-    public MapService(FloorRepository floorRepository, RoomRepository roomRepository,
-                      EdgeRepository edgeRepository, StairsRepository stairsRepository, NodeRepository nodeRepository) {
+    public FloorService (FloorRepository floorRepository, RoomRepository roomRepository,
+                       EdgeRepository edgeRepository, StairsRepository stairsRepository, NodeRepository nodeRepository) {
         this.floorRepository = floorRepository;
         this.roomRepository = roomRepository;
         this.edgeRepository = edgeRepository;
         this.stairsRepository = stairsRepository;
         this.nodeRepository = nodeRepository;
     }
-
-    // FLOOR
 
     public FloorDataDTO getFloorData(int id) {
         Floor floor = floorRepository.findById(id)
@@ -65,26 +61,20 @@ public class MapService {
         return new FloorDataDTO(floor, rooms, edges, stairs, nodes);
     }
 
-    // ROOM
+    public FloorDataDTO updateFloorData(int id, FloorDataDTO floorDataDTO) {
+        // Проверяем, существует ли этаж с таким id
+        if (floorDataDTO.getFloor().getId() != id) {
+            throw new IllegalArgumentException("ID этажа в пути и в теле запроса не совпадают");
+        }
 
-    public Room getRoomByName(String name) {
-        return roomRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException(String.format("Помещение %s не найдено", name)));
+        // Сохраняем данные в базу
+        floorRepository.save(floorDataDTO.getFloor());
+        roomRepository.saveAll(floorDataDTO.getRooms());
+        edgeRepository.saveAll(floorDataDTO.getEdges());
+        stairsRepository.saveAll(floorDataDTO.getStairs());
+        nodeRepository.saveAll(floorDataDTO.getNodes());
+
+        // Возвращаем обновленные данные
+        return getFloorData(id);
     }
-
-    public Room getRoomById(int id) {
-        return roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(String.format("Помещение с ID:%d не найдено", id)));
-    }
-
-    public List<Room> getAllRooms() {
-        return roomRepository.findAll();
-    }
-
-    // NODE
-
-    public List<Node> getAllNodes() {
-        return nodeRepository.findAll();
-    }
-
 }

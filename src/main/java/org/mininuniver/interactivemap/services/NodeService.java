@@ -17,20 +17,27 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactivemap.config;
+package org.mininuniver.interactivemap.services;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.mininuniver.interactivemap.models.*;
+import org.mininuniver.interactivemap.repositories.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Configuration
-public class WebConfig implements WebMvcConfigurer {
+import java.util.List;
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://127.0.0.1:5500")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("*");
+@Service
+public class NodeService {
+
+    private final NodeRepository nodeRepository;
+
+    @Autowired
+    public NodeService(NodeRepository nodeRepository) {
+        this.nodeRepository = nodeRepository;
     }
+
+    public List<Node> getAllNodes() {
+        return nodeRepository.findAll();
+    }
+
 }

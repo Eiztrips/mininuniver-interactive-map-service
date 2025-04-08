@@ -23,7 +23,9 @@ import org.mininuniver.interactivemap.dto.FloorDataDTO;
 import org.mininuniver.interactivemap.models.Node;
 import org.mininuniver.interactivemap.models.Room;
 import org.mininuniver.interactivemap.services.EdgeService;
-import org.mininuniver.interactivemap.services.MapService;
+import org.mininuniver.interactivemap.services.FloorService;
+import org.mininuniver.interactivemap.services.NodeService;
+import org.mininuniver.interactivemap.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,27 +36,31 @@ import java.util.List;
 public class MapController {
 
     @Autowired
-    private MapService mapService;
+    private NodeService mapService;
+    @Autowired
+    private RoomService roomService;
     @Autowired
     private EdgeService edgeService;
+    @Autowired
+    private FloorService floorService;
 
     // FLOOR
 
     @GetMapping("/floors/{id}")
     public FloorDataDTO getFloorById(@PathVariable int id) {
-        return mapService.getFloorData(id);
+        return floorService.getFloorData(id);
     }
 
     // ROOM
 
     @GetMapping("/rooms/{name}")
     public Room getRoomByName(@PathVariable String name) {
-        return mapService.getRoomByName(name);
+        return roomService.getRoomByName(name);
     }
 
     @GetMapping("/rooms")
     public List<Room> getAllRooms() {
-        return mapService.getAllRooms();
+        return roomService.getAllRooms();
     }
 
     // NODE
@@ -66,8 +72,13 @@ public class MapController {
 
     // ADMIN
 
-        @GetMapping("/generate/edges")
+    @GetMapping("/set/edges")
     public void generateEdges() {
         edgeService.generateEdges();
+    }
+
+    @PutMapping("/set/floor/{id}")
+    public FloorDataDTO updateFloorData(@PathVariable int id, @RequestBody FloorDataDTO floorDataDTO) {
+        return floorService.updateFloorData(id, floorDataDTO);
     }
 }
