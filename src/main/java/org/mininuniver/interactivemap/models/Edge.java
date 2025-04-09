@@ -34,20 +34,21 @@ public class Edge {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "nodes", columnDefinition = "integer[]", nullable = false)
     private int[] nodes;
 
-    @Column(name = "floor_id", nullable = false)
-    private int floorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "floor_id", nullable = false) // ссылается на Floors(id)
+    private Floor floor;
 
     @Column(name = "distance", nullable = false)
     private float distance;
 
-    public Edge(int[] nodes, int floorId, float distance) {
+    public Edge(int[] nodes, Floor floor, float distance) {
         this.nodes = nodes;
-        this.floorId = floorId;
+        this.floor = floor;
         this.distance = distance;
     }
 

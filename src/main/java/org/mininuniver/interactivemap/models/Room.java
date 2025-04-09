@@ -19,9 +19,11 @@
 
 package org.mininuniver.interactivemap.models;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.mininuniver.interactivemap.models.submodels.Point;
 import org.mininuniver.interactivemap.utils.PointListJsonbConverter;
 
@@ -35,15 +37,18 @@ public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String name;
 
-    private int floorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "floor_id", nullable = false) // ссылается на Floors(id)
+    private Floor floor;
+
     private int nodeId;
 
-    @Convert(converter = PointListJsonbConverter.class)
     @Column(columnDefinition = "jsonb")
+    @Type(JsonBinaryType.class)
     private List<Point> points;
 
 }

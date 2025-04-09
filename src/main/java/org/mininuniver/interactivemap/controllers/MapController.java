@@ -19,7 +19,7 @@
 
 package org.mininuniver.interactivemap.controllers;
 
-import org.mininuniver.interactivemap.dto.FloorDataDTO;
+import org.mininuniver.interactivemap.dto.FloorDTO;
 import org.mininuniver.interactivemap.models.Node;
 import org.mininuniver.interactivemap.models.Room;
 import org.mininuniver.interactivemap.services.EdgeService;
@@ -47,7 +47,7 @@ public class MapController {
     // FLOOR
 
     @GetMapping("/floors/{id}")
-    public FloorDataDTO getFloorById(@PathVariable int id) {
+    public FloorDTO getFloorById(@PathVariable int id) {
         return floorService.getFloorData(id);
     }
 
@@ -78,7 +78,7 @@ public class MapController {
     }
 
     @PutMapping("/set/floor/{id}")
-    public FloorDataDTO updateFloorData(@PathVariable int id, @RequestBody FloorDataDTO floorDataDTO) {
-        return floorService.updateFloorData(id, floorDataDTO);
+    public FloorDTO updateFloorData(@PathVariable int id, @RequestBody FloorDTO floorDTO) {
+        return floorService.createFloorData(id, floorDTO);
     }
 }

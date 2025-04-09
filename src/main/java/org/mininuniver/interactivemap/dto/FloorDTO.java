@@ -27,14 +27,14 @@ import java.util.List;
 
 @Getter
 @Setter
-public class FloorDataDTO {
+public class FloorDTO {
     private Floor floor;
     private List<Room> rooms;
     private List<Edge> edges;
     private List<Stairs> stairs;
     private List<Node> nodes;
 
-    public FloorDataDTO(Floor floor, List<Room> rooms, List<Edge> edges, List<Stairs> stairs, List<Node> nodes) {
+    public FloorDTO(Floor floor, List<Room> rooms, List<Edge> edges, List<Stairs> stairs, List<Node> nodes) {
         this.floor = floor;
         this.rooms = rooms;
         this.edges = edges;

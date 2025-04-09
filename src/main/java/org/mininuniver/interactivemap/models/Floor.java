@@ -19,9 +19,11 @@
 
 package org.mininuniver.interactivemap.models;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.mininuniver.interactivemap.models.submodels.Point;
 import org.mininuniver.interactivemap.utils.PointListJsonbConverter;
 
@@ -35,12 +37,14 @@ public class Floor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String name;
 
-    @Convert(converter = PointListJsonbConverter.class)
     @Column(columnDefinition = "jsonb")
+    @Type(JsonBinaryType.class)
     private List<Point> points;
 
+    @Version
+    private Integer version;
 }

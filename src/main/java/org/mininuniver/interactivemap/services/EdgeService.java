@@ -67,7 +67,7 @@ public class EdgeService {
                         String edgeKey = nodeId + "-" + neighborId;
 
                         if (!addedEdges.contains(edgeKey)) {
-                            edges.add(new Edge(new int[]{nodeId, neighborId}, node.getFloorId(), distance));
+                            edges.add(new Edge(new int[]{nodeId, neighborId}, node.getFloor(), distance));
                             addedEdges.add(edgeKey);
                         }
                     }

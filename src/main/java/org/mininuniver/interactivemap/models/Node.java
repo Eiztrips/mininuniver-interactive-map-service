@@ -36,9 +36,11 @@ public class Node {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    private int floorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "floor_id", nullable = false) // ссылается на Floors(id)
+    private Floor floor;
 
     @Convert(converter = JsonbConverter.class)
     @Column(name = "pos", columnDefinition = "jsonb")
