@@ -45,7 +45,7 @@ public class Room {
     @JoinColumn(name = "floor_id", nullable = false) // ссылается на Floors(id)
     private Floor floor;
 
-    private int nodeId;
+    private Integer nodeId;
 
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)

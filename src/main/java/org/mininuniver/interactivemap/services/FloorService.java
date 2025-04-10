@@ -105,4 +105,20 @@ public class FloorService {
         return floorDTO;
     }
 
+    @Transactional
+    public void deleteFloor(int number) {
+        Floor floor = floorRepository.findByFloorNumber(number)
+                .orElseThrow(() -> new EntityNotFoundException("Этаж не найден"));
+
+        try {
+            roomRepository.deleteAllByFloor(floor);
+            edgeRepository.deleteAllByFloor(floor);
+            stairsRepository.deleteAllByFloor(floor);
+            nodeRepository.deleteAllByFloor(floor);
+            floorRepository.delete(floor);
+        } catch (OptimisticLockException e) {
+            throw new RuntimeException("Ошибка при удалении этажа: " + e.getMessage());
+        }
+    }
+
 }

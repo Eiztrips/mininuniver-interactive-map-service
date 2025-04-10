@@ -27,6 +27,7 @@ import org.mininuniver.interactivemap.services.FloorService;
 import org.mininuniver.interactivemap.services.NodeService;
 import org.mininuniver.interactivemap.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -77,8 +78,14 @@ public class MapController {
         edgeService.generateEdges();
     }
 
-    @PutMapping("/set/floor/{id}")
-    public FloorDTO updateFloorData(@PathVariable int id, @RequestBody FloorDTO floorDTO) {
-        return floorService.saveOrUpdateFloorData(id, floorDTO);
+    @DeleteMapping("/del/floors/{number}")
+    public ResponseEntity<Void> deleteFloor(@PathVariable int number) {
+        floorService.deleteFloor(number);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/floors/{number}")
+    public FloorDTO updateFloorData(@PathVariable int number, @RequestBody FloorDTO floorDTO) {
+        return floorService.saveOrUpdateFloorData(number, floorDTO);
     }
 }
