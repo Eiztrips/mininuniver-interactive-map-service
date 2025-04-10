@@ -79,6 +79,6 @@ public class MapController {
 
     @PutMapping("/set/floor/{id}")
     public FloorDTO updateFloorData(@PathVariable int id, @RequestBody FloorDTO floorDTO) {
-        return floorService.createFloorData(id, floorDTO);
+        return floorService.saveOrUpdateFloorData(id, floorDTO);
     }
 }

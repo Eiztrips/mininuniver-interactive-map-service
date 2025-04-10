@@ -29,4 +29,6 @@ import java.util.List;
 @Repository
 public interface StairsRepository extends JpaRepository<Stairs, Integer>{
     List<Stairs> findByFloor(Floor floor);
+
+    void deleteAllByFloor(Floor floor);
 }

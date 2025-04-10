@@ -30,4 +30,6 @@ import java.util.List;
 public interface NodeRepository extends JpaRepository<Node, Integer>{
     List<Node> findByFloor(Floor floor);
     List<Node> findAll();
+
+    void deleteAllByFloor(Floor floor);
 }

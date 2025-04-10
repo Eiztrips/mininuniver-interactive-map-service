@@ -66,12 +66,17 @@ public class FloorService {
     }
 
     @Transactional
-    public FloorDTO createFloorData(int id, FloorDTO floorDTO) {
-        Floor floor = new Floor();
+    public FloorDTO saveOrUpdateFloorData(int id, FloorDTO floorDTO) {
+        Floor floor = floorRepository.findById(id).orElseGet(() -> new Floor());
         floor.setFloorNumber(id);
         floor.setName(floorDTO.getFloor().getName());
         floor.setPoints(floorDTO.getFloor().getPoints());
         floorRepository.save(floor);
+
+        nodeRepository.deleteAllByFloor(floor);
+        edgeRepository.deleteAllByFloor(floor);
+        roomRepository.deleteAllByFloor(floor);
+        stairsRepository.deleteAllByFloor(floor);
 
         for (Node node : floorDTO.getNodes()) {
             node.setId(null);
@@ -97,8 +102,7 @@ public class FloorService {
             stairsRepository.save(stair);
         }
 
-        // PATHS
-
         return floorDTO;
     }
+
 }

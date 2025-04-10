@@ -29,4 +29,6 @@ import java.util.List;
 @Repository
 public interface EdgeRepository extends JpaRepository<Edge, Integer>{
     List<Edge> findByFloor(Floor floor);
+
+    void deleteAllByFloor(Floor floor);
 }
