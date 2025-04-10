@@ -39,6 +39,8 @@ public class Floor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private int floorNumber;
+
     private String name;
 
     @Column(columnDefinition = "jsonb")

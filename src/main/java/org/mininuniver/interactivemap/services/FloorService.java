@@ -23,6 +23,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import org.mininuniver.interactivemap.dto.FloorDTO;
 import org.mininuniver.interactivemap.models.*;
+import org.mininuniver.interactivemap.models.submodels.Point;
 import org.mininuniver.interactivemap.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,51 +67,38 @@ public class FloorService {
 
     @Transactional
     public FloorDTO createFloorData(int id, FloorDTO floorDTO) {
-        // Проверка соответствия ID
-        if (floorDTO.getFloor().getId() != id) {
-            throw new EntityNotFoundException("ID в URL не совпадает с ID в теле запроса");
+        Floor floor = new Floor();
+        floor.setFloorNumber(id);
+        floor.setName(floorDTO.getFloor().getName());
+        floor.setPoints(floorDTO.getFloor().getPoints());
+        floorRepository.save(floor);
+
+        for (Node node : floorDTO.getNodes()) {
+            node.setId(null);
+            node.setFloor(floor);
+            nodeRepository.save(node);
         }
 
-        // Получаем или создаем объект этажа
-        Floor floorEntity;
-
-        if (id > 0 && floorRepository.existsById(id)) {
-            // Если этаж существует, удаляем все связанные данные
-            floorEntity = floorRepository.getReferenceById(id);
-
-            // Удаляем существующие связанные сущности
-            nodeRepository.deleteAll(nodeRepository.findByFloor(floorEntity));
-            roomRepository.deleteAll(roomRepository.findByFloor(floorEntity));
-            edgeRepository.deleteAll(edgeRepository.findByFloor(floorEntity));
-            stairsRepository.deleteAll(stairsRepository.findByFloor(floorEntity));
-
-            // Обновляем свойства этажа
-            floorEntity.setName(floorDTO.getFloor().getName());
-            floorEntity.setPoints(floorDTO.getFloor().getPoints());
-        } else {
-            // Создаем новый этаж
-            floorEntity = new Floor();
-            floorEntity.setId(id > 0 ? id : null); // Устанавливаем ID только если он положительный
-            floorEntity.setName(floorDTO.getFloor().getName());
-            floorEntity.setPoints(floorDTO.getFloor().getPoints());
+        for (Edge edge : floorDTO.getEdges()) {
+            edge.setId(null);
+            edge.setFloor(floor);
+            edgeRepository.save(edge);
         }
 
-        // Сохраняем этаж
-        final Floor savedFloor = floorRepository.saveAndFlush(floorEntity);
+        for (Room room : floorDTO.getRooms()) {
+            room.setId(null);
+            room.setFloor(floor);
+            roomRepository.save(room);
+        }
 
-        // Привязываем все сущности к сохраненному этажу
-        floorDTO.getNodes().forEach(node -> node.setFloor(savedFloor));
-        floorDTO.getRooms().forEach(room -> room.setFloor(savedFloor));
-        floorDTO.getEdges().forEach(edge -> edge.setFloor(savedFloor));
-        floorDTO.getStairs().forEach(stairs -> stairs.setFloor(savedFloor));
+        for (Stairs stair : floorDTO.getStairs()) {
+            stair.setId(null);
+            stair.setFloor(floor);
+            stairsRepository.save(stair);
+        }
 
-        // Сохраняем связанные сущности
-        nodeRepository.saveAll(floorDTO.getNodes());
-        roomRepository.saveAll(floorDTO.getRooms());
-        edgeRepository.saveAll(floorDTO.getEdges());
-        stairsRepository.saveAll(floorDTO.getStairs());
+        // PATHS
 
         return floorDTO;
     }
-
 }

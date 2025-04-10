@@ -19,9 +19,11 @@
 
 package org.mininuniver.interactivemap.models;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.mininuniver.interactivemap.utils.JsonbConverter;
 
 import java.util.ArrayList;
@@ -42,8 +44,8 @@ public class Node {
     @JoinColumn(name = "floor_id", nullable = false) // ссылается на Floors(id)
     private Floor floor;
 
-    @Convert(converter = JsonbConverter.class)
-    @Column(name = "pos", columnDefinition = "jsonb")
+    @Column(columnDefinition = "jsonb")
+    @Type(JsonBinaryType.class)
     private Map<String, Object> pos;
 
     @Column(name = "neighbors", columnDefinition = "integer[]")
