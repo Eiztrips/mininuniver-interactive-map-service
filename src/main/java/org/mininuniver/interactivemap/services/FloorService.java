@@ -29,7 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FloorService {
@@ -78,22 +80,48 @@ public class FloorService {
         roomRepository.deleteAllByFloor(floor);
         stairsRepository.deleteAllByFloor(floor);
 
+        Map<Integer, Integer> nodeIdMapping = new HashMap<>();
+
         for (Node node : floorDTO.getNodes()) {
-            node.setNodeNumber(node.getId());
+            Integer oldId = node.getId();
+            node.setNodeNumber(oldId);
             node.setId(null);
             node.setFloor(floor);
-            nodeRepository.save(node);
+            Node savedNode = nodeRepository.save(node);
+            nodeIdMapping.put(oldId, savedNode.getId());
+        }
+
+        for (Node node : floorDTO.getNodes()) {
+            Node savedNode = nodeRepository.findById(nodeIdMapping.get(node.getNodeNumber())).orElseThrow();
+            int[] oldNeighbors = savedNode.getNeighbors();
+            if (oldNeighbors != null) {
+                int[] newNeighbors = new int[oldNeighbors.length];
+                for (int i = 0; i < oldNeighbors.length; i++) {
+                    newNeighbors[i] = nodeIdMapping.getOrDefault(oldNeighbors[i], oldNeighbors[i]);
+                }
+                savedNode.setNeighbors(newNeighbors);
+                nodeRepository.save(savedNode);
+            }
         }
 
         for (Edge edge : floorDTO.getEdges()) {
             edge.setId(null);
             edge.setFloor(floor);
+            int[] oldNodes = edge.getNodes();
+            int[] newNodes = new int[oldNodes.length];
+            for (int i = 0; i < oldNodes.length; i++) {
+                newNodes[i] = nodeIdMapping.getOrDefault(oldNodes[i], oldNodes[i]);
+            }
+            edge.setNodes(newNodes);
             edgeRepository.save(edge);
         }
 
         for (Room room : floorDTO.getRooms()) {
             room.setId(null);
             room.setFloor(floor);
+            if (room.getNodeId() != null) {
+                room.setNodeId(nodeIdMapping.getOrDefault(room.getNodeId(), room.getNodeId()));
+            }
             roomRepository.save(room);
         }
 
