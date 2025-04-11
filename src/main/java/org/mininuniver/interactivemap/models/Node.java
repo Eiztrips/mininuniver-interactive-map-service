@@ -40,6 +40,8 @@ public class Node {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private Integer nodeNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "floor_id", nullable = false) // ссылается на Floors(id)
     private Floor floor;

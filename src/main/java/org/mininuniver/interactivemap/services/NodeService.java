@@ -30,14 +30,24 @@ import java.util.List;
 public class NodeService {
 
     private final NodeRepository nodeRepository;
+    private final FloorRepository floorRepository;
 
     @Autowired
-    public NodeService(NodeRepository nodeRepository) {
+    public NodeService(NodeRepository nodeRepository, FloorRepository floorRepository) {
         this.nodeRepository = nodeRepository;
+        this.floorRepository = floorRepository;
     }
 
     public List<Node> getAllNodes() {
         return nodeRepository.findAll();
     }
 
+    public Node getLastNodeId(int number) {
+        Floor floor = floorRepository.findByFloorNumber(number).get();
+        List<Node> nodes = nodeRepository.findAllByFloor(floor);
+        if (nodes.isEmpty()) {
+            return null;
+        }
+        return nodes.getLast();
+    }
 }

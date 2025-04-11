@@ -1,0 +1,25 @@
+package org.mininuniver.interactivemap.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.mininuniver.interactivemap.models.Node;
+
+import java.util.Map;
+
+@Getter
+@Setter
+public class NodeDTO {
+    private Integer id;
+    private Integer nodeNumber;
+    private Integer floorId;
+    private Map<String, Object> pos;
+    private int[] neighbors;
+
+    public NodeDTO(Node node) {
+        this.id = node.getId();
+        this.nodeNumber = node.getNodeNumber();
+        this.floorId = node.getFloor() != null ? node.getFloor().getId() : null;
+        this.pos = node.getPos();
+        this.neighbors = node.getNeighbors();
+    }
+}

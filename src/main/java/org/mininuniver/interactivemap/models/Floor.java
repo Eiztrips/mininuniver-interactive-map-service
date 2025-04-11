@@ -47,6 +47,4 @@ public class Floor {
     @Type(JsonBinaryType.class)
     private List<Point> points;
 
-    @Version
-    private Integer version;
 }

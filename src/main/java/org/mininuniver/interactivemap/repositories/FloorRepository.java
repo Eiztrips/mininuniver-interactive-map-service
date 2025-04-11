@@ -27,7 +27,6 @@ import java.util.Optional;
 
 @Repository
 public interface FloorRepository extends JpaRepository<Floor, Integer> {
-    void deleteByFloorNumber(Integer number);
 
     Optional<Floor> findByFloorNumber(int number);
 }

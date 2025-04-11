@@ -29,7 +29,7 @@ import java.util.List;
 @Repository
 public interface NodeRepository extends JpaRepository<Node, Integer>{
     List<Node> findByFloor(Floor floor);
-    List<Node> findAll();
+    List<Node> findAllByFloor(Floor floor);
 
     void deleteAllByFloor(Floor floor);
 }

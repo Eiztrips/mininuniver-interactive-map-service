@@ -79,6 +79,7 @@ public class FloorService {
         stairsRepository.deleteAllByFloor(floor);
 
         for (Node node : floorDTO.getNodes()) {
+            node.setNodeNumber(node.getId());
             node.setId(null);
             node.setFloor(floor);
             nodeRepository.save(node);

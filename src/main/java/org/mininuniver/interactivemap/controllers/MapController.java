@@ -20,6 +20,7 @@
 package org.mininuniver.interactivemap.controllers;
 
 import org.mininuniver.interactivemap.dto.FloorDTO;
+import org.mininuniver.interactivemap.dto.NodeDTO;
 import org.mininuniver.interactivemap.models.Node;
 import org.mininuniver.interactivemap.models.Room;
 import org.mininuniver.interactivemap.services.EdgeService;
@@ -73,6 +74,12 @@ public class MapController {
 
     // ADMIN
 
+    @GetMapping("floors/{number}/nodes/last")
+    public NodeDTO getLastNode(@PathVariable int number) {
+        Node node = mapService.getLastNodeId(number);
+        return node != null ? new NodeDTO(node) : null;
+    }
+
     @GetMapping("/set/edges")
     public void generateEdges() {
         edgeService.generateEdges();
@@ -84,7 +91,7 @@ public class MapController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/floors/{number}")
+    @PutMapping("/set/floors/{number}")
     public FloorDTO updateFloorData(@PathVariable int number, @RequestBody FloorDTO floorDTO) {
         return floorService.saveOrUpdateFloorData(number, floorDTO);
     }
