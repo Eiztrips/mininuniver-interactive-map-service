@@ -40,7 +40,7 @@ public class Edge {
     private int[] nodes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "floor_id", nullable = false) // ссылается на Floors(id)
+    @JoinColumn(name = "floor_id", nullable = false)
     private Floor floor;
 
     @Column(name = "distance", nullable = false)

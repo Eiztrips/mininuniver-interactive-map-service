@@ -43,7 +43,7 @@ public class Node {
     private Integer nodeNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "floor_id", nullable = false) // ссылается на Floors(id)
+    @JoinColumn(name = "floor_id", nullable = false)
     private Floor floor;
 
     @Column(columnDefinition = "jsonb")

@@ -42,7 +42,7 @@ public class Room {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "floor_id", nullable = false) // ссылается на Floors(id)
+    @JoinColumn(name = "floor_id", nullable = false)
     private Floor floor;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -84,17 +84,15 @@ public class FloorService {
 
         Map<Integer, Integer> nodeIdMapping = new HashMap<>();
 
-        // Сохраняем ноды
         for (Node node : floorDTO.getNodes()) {
             Integer oldId = node.getId();
             node.setId(null);
             node.setFloor(floor);
-            node.setNodeNumber(oldId); // сохраняем старый id как номер
+            node.setNodeNumber(oldId);
             Node saved = nodeRepository.save(node);
             nodeIdMapping.put(oldId, saved.getId());
         }
 
-        // Обновляем соседи
         for (Map.Entry<Integer, Integer> entry : nodeIdMapping.entrySet()) {
             Node node = nodeRepository.findById(entry.getValue()).orElseThrow();
             int[] oldNeighbors = floorDTO.getNodes().stream()
@@ -112,7 +110,6 @@ public class FloorService {
             }
         }
 
-        // Сохраняем рёбра
         for (Edge edge : floorDTO.getEdges()) {
             edge.setId(null);
             edge.setFloor(floor);
@@ -123,7 +120,6 @@ public class FloorService {
             edgeRepository.save(edge);
         }
 
-        // Сохраняем комнаты
         for (Room room : floorDTO.getRooms()) {
             room.setId(null);
             room.setFloor(floor);
@@ -139,7 +135,6 @@ public class FloorService {
             roomRepository.save(room);
         }
 
-        // Сохраняем лестницы
         for (Stairs stair : floorDTO.getStairs()) {
             stair.setId(null);
             stair.setFloor(floor);
