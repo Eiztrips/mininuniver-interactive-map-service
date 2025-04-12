@@ -45,7 +45,9 @@ public class Room {
     @JoinColumn(name = "floor_id", nullable = false) // ссылается на Floors(id)
     private Floor floor;
 
-    private Integer nodeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "node_id")
+    private Node node;
 
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)

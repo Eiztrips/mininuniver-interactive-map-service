@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,62 +70,76 @@ public class FloorService {
 
     @Transactional
     public FloorDTO saveOrUpdateFloorData(int id, FloorDTO floorDTO) {
-        Floor floor = floorRepository.findById(id).orElseGet(() -> new Floor());
+        Floor floor = floorRepository.findById(id).orElseGet(Floor::new);
         floor.setFloorNumber(id);
         floor.setName(floorDTO.getFloor().getName());
         floor.setPoints(floorDTO.getFloor().getPoints());
-        floorRepository.save(floor);
+        floor = floorRepository.save(floor); // сначала сохранили, потом чистим всё остальное
 
+        // Удаляем старое только после сохранения (иначе падение)
+        roomRepository.deleteAllByFloor(floor);
         nodeRepository.deleteAllByFloor(floor);
         edgeRepository.deleteAllByFloor(floor);
-        roomRepository.deleteAllByFloor(floor);
         stairsRepository.deleteAllByFloor(floor);
 
         Map<Integer, Integer> nodeIdMapping = new HashMap<>();
 
+        // Сохраняем ноды
         for (Node node : floorDTO.getNodes()) {
             Integer oldId = node.getId();
-            node.setNodeNumber(oldId);
             node.setId(null);
             node.setFloor(floor);
-            Node savedNode = nodeRepository.save(node);
-            nodeIdMapping.put(oldId, savedNode.getId());
+            node.setNodeNumber(oldId); // сохраняем старый id как номер
+            Node saved = nodeRepository.save(node);
+            nodeIdMapping.put(oldId, saved.getId());
         }
 
-        for (Node node : floorDTO.getNodes()) {
-            Node savedNode = nodeRepository.findById(nodeIdMapping.get(node.getNodeNumber())).orElseThrow();
-            int[] oldNeighbors = savedNode.getNeighbors();
+        // Обновляем соседи
+        for (Map.Entry<Integer, Integer> entry : nodeIdMapping.entrySet()) {
+            Node node = nodeRepository.findById(entry.getValue()).orElseThrow();
+            int[] oldNeighbors = floorDTO.getNodes().stream()
+                    .filter(n -> n.getId().equals(entry.getKey()))
+                    .findFirst()
+                    .map(Node::getNeighbors)
+                    .orElse(null);
+
             if (oldNeighbors != null) {
-                int[] newNeighbors = new int[oldNeighbors.length];
-                for (int i = 0; i < oldNeighbors.length; i++) {
-                    newNeighbors[i] = nodeIdMapping.getOrDefault(oldNeighbors[i], oldNeighbors[i]);
-                }
-                savedNode.setNeighbors(newNeighbors);
-                nodeRepository.save(savedNode);
+                int[] newNeighbors = Arrays.stream(oldNeighbors)
+                        .map(n -> nodeIdMapping.getOrDefault(n, n))
+                        .toArray();
+                node.setNeighbors(newNeighbors);
+                nodeRepository.save(node);
             }
         }
 
+        // Сохраняем рёбра
         for (Edge edge : floorDTO.getEdges()) {
             edge.setId(null);
             edge.setFloor(floor);
-            int[] oldNodes = edge.getNodes();
-            int[] newNodes = new int[oldNodes.length];
-            for (int i = 0; i < oldNodes.length; i++) {
-                newNodes[i] = nodeIdMapping.getOrDefault(oldNodes[i], oldNodes[i]);
-            }
+            int[] newNodes = Arrays.stream(edge.getNodes())
+                    .map(n -> nodeIdMapping.getOrDefault(n, n))
+                    .toArray();
             edge.setNodes(newNodes);
             edgeRepository.save(edge);
         }
 
+        // Сохраняем комнаты
         for (Room room : floorDTO.getRooms()) {
             room.setId(null);
             room.setFloor(floor);
-            if (room.getNodeId() != null) {
-                room.setNodeId(nodeIdMapping.getOrDefault(room.getNodeId(), room.getNodeId()));
+            if (room.getNode() != null) {
+                Integer oldNodeId = room.getNode().getId();
+                if (oldNodeId != null && nodeIdMapping.containsKey(oldNodeId)) {
+                    Node newNode = nodeRepository.findById(nodeIdMapping.get(oldNodeId)).orElse(null);
+                    room.setNode(newNode);
+                } else {
+                    room.setNode(null);
+                }
             }
             roomRepository.save(room);
         }
 
+        // Сохраняем лестницы
         for (Stairs stair : floorDTO.getStairs()) {
             stair.setId(null);
             stair.setFloor(floor);
@@ -133,6 +148,7 @@ public class FloorService {
 
         return floorDTO;
     }
+
 
     @Transactional
     public void deleteFloor(int number) {

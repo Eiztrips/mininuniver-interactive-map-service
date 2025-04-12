@@ -31,5 +31,6 @@ public interface NodeRepository extends JpaRepository<Node, Integer>{
     List<Node> findByFloor(Floor floor);
     List<Node> findAllByFloor(Floor floor);
 
+
     void deleteAllByFloor(Floor floor);
 }
