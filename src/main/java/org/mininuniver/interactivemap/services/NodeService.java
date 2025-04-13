@@ -43,8 +43,9 @@ public class NodeService {
     }
 
     public Node getLastNodeId(int number) {
-        Floor floor = floorRepository.findByFloorNumber(number).get();
-        List<Node> nodes = nodeRepository.findAllByFloor(floor);
+        Floor floor = floorRepository.findByFloorNumber(number)
+                .orElseThrow(() -> new RuntimeException("Этаж не найден"));;
+        List<Node> nodes = nodeRepository.findAllByFloorId(floor.getId());
         if (nodes.isEmpty()) {
             return null;
         }

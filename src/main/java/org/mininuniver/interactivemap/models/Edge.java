@@ -39,16 +39,14 @@ public class Edge {
     @Column(name = "nodes", columnDefinition = "integer[]", nullable = false)
     private int[] nodes;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "floor_id", nullable = false)
-    private Floor floor;
+    private Integer floorId;
 
     @Column(name = "distance", nullable = false)
     private float distance;
 
-    public Edge(int[] nodes, Floor floor, float distance) {
+    public Edge(int[] nodes, Integer floorId, float distance) {
         this.nodes = nodes;
-        this.floor = floor;
+        this.floorId = floorId;
         this.distance = distance;
     }
 

@@ -57,13 +57,13 @@ public class FloorService {
         Floor floor = floorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Этаж не найден"));
 
-        List<Room> rooms = roomRepository.findByFloor(floor);
+        List<Room> rooms = roomRepository.findByFloorId(floor.getId());
 
-        List<Edge> edges = edgeRepository.findByFloor(floor);
+        List<Edge> edges = edgeRepository.findByFloorId(floor.getId());
 
-        List<Stairs> stairs = stairsRepository.findByFloor(floor);
+        List<Stairs> stairs = stairsRepository.findByFloorId(floor.getId());
 
-        List<Node> nodes = nodeRepository.findByFloor(floor);
+        List<Node> nodes = nodeRepository.findByFloorId(floor.getId());
 
         return new FloorDTO(floor, rooms, edges, stairs, nodes);
     }
@@ -77,17 +77,17 @@ public class FloorService {
         floor = floorRepository.save(floor); // сначала сохранили, потом чистим всё остальное
 
         // Удаляем старое только после сохранения (иначе падение)
-        roomRepository.deleteAllByFloor(floor);
-        nodeRepository.deleteAllByFloor(floor);
-        edgeRepository.deleteAllByFloor(floor);
-        stairsRepository.deleteAllByFloor(floor);
+        roomRepository.deleteAllByFloorId(floor.getId());
+        nodeRepository.deleteAllByFloorId(floor.getId());
+        edgeRepository.deleteAllByFloorId(floor.getId());
+        stairsRepository.deleteAllByFloorId(floor.getId());
 
         Map<Integer, Integer> nodeIdMapping = new HashMap<>();
 
         for (Node node : floorDTO.getNodes()) {
             Integer oldId = node.getId();
             node.setId(null);
-            node.setFloor(floor);
+            node.setFloorId(floor.getId());
             node.setNodeNumber(oldId);
             Node saved = nodeRepository.save(node);
             nodeIdMapping.put(oldId, saved.getId());
@@ -112,7 +112,7 @@ public class FloorService {
 
         for (Edge edge : floorDTO.getEdges()) {
             edge.setId(null);
-            edge.setFloor(floor);
+            edge.setFloorId(floor.getId());
             int[] newNodes = Arrays.stream(edge.getNodes())
                     .map(n -> nodeIdMapping.getOrDefault(n, n))
                     .toArray();
@@ -122,14 +122,11 @@ public class FloorService {
 
         for (Room room : floorDTO.getRooms()) {
             room.setId(null);
-            room.setFloor(floor);
-            if (room.getNode() != null) {
-                Integer oldNodeId = room.getNode().getId();
-                if (oldNodeId != null && nodeIdMapping.containsKey(oldNodeId)) {
-                    Node newNode = nodeRepository.findById(nodeIdMapping.get(oldNodeId)).orElse(null);
-                    room.setNode(newNode);
-                } else {
-                    room.setNode(null);
+            room.setFloorId(floor.getId());
+            if (room.getNodeId() != null) {
+                Integer oldNodeId = room.getNodeId();
+                if (nodeIdMapping.containsKey(oldNodeId)) {
+                    room.setNodeId(nodeIdMapping.get(oldNodeId));
                 }
             }
             roomRepository.save(room);
@@ -137,7 +134,7 @@ public class FloorService {
 
         for (Stairs stair : floorDTO.getStairs()) {
             stair.setId(null);
-            stair.setFloor(floor);
+            stair.setFloorId(floor.getId());
             stairsRepository.save(stair);
         }
 
@@ -151,10 +148,10 @@ public class FloorService {
                 .orElseThrow(() -> new EntityNotFoundException("Этаж не найден"));
 
         try {
-            roomRepository.deleteAllByFloor(floor);
-            edgeRepository.deleteAllByFloor(floor);
-            stairsRepository.deleteAllByFloor(floor);
-            nodeRepository.deleteAllByFloor(floor);
+            roomRepository.deleteAllByFloorId(floor.getId());
+            edgeRepository.deleteAllByFloorId(floor.getId());
+            stairsRepository.deleteAllByFloorId(floor.getId());
+            nodeRepository.deleteAllByFloorId(floor.getId());
             floorRepository.delete(floor);
         } catch (OptimisticLockException e) {
             throw new RuntimeException("Ошибка при удалении этажа: " + e.getMessage());

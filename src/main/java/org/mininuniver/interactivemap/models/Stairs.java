@@ -39,9 +39,7 @@ public class Stairs {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "floor_id", nullable = false)
-    private Floor floor;
+    private Integer floorId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "node_id")

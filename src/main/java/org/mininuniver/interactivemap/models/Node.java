@@ -42,9 +42,7 @@ public class Node {
 
     private Integer nodeNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "floor_id", nullable = false)
-    private Floor floor;
+    private Integer floorId;
 
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)

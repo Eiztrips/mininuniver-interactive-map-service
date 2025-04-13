@@ -37,7 +37,7 @@ public class NodeDTO {
     public NodeDTO(Node node) {
         this.id = node.getId();
         this.nodeNumber = node.getNodeNumber();
-        this.floorId = node.getFloor() != null ? node.getFloor().getId() : null;
+        this.floorId = node.getFloorId() != null ? node.getFloorId() : null;
         this.pos = node.getPos();
         this.neighbors = node.getNeighbors();
     }

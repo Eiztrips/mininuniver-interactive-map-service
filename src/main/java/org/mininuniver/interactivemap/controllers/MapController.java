@@ -80,11 +80,6 @@ public class MapController {
         return node != null ? new NodeDTO(node) : null;
     }
 
-    @GetMapping("/set/edges")
-    public void generateEdges() {
-        edgeService.generateEdges();
-    }
-
     @DeleteMapping("/del/floors/{number}")
     public ResponseEntity<Void> deleteFloor(@PathVariable int number) {
         floorService.deleteFloor(number);

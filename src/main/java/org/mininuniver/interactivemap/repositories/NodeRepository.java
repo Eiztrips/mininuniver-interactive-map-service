@@ -28,9 +28,9 @@ import java.util.List;
 
 @Repository
 public interface NodeRepository extends JpaRepository<Node, Integer>{
-    List<Node> findByFloor(Floor floor);
-    List<Node> findAllByFloor(Floor floor);
+    List<Node> findByFloorId(Integer floorId);
+    List<Node> findAllByFloorId(Integer floorId);
 
 
-    void deleteAllByFloor(Floor floor);
+    void deleteAllByFloorId(Integer floorId);
 }

@@ -28,7 +28,7 @@ import java.util.List;
 
 @Repository
 public interface EdgeRepository extends JpaRepository<Edge, Integer>{
-    List<Edge> findByFloor(Floor floor);
+    List<Edge> findByFloorId(Integer floorId);
 
-    void deleteAllByFloor(Floor floor);
+    void deleteAllByFloorId(Integer floorId);
 }

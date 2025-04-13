@@ -41,13 +41,9 @@ public class Room {
 
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "floor_id", nullable = false)
-    private Floor floor;
+    private Integer floorId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "node_id")
-    private Node node;
+    private Integer nodeId;
 
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)
