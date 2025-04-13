@@ -17,39 +17,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactivemap.models;
+package org.mininuniver.interactivemap.models
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.Type;
-import org.mininuniver.interactivemap.models.submodels.Point;
-import org.mininuniver.interactivemap.utils.PointListJsonbConverter;
+import jakarta.persistence.*
 
-import java.util.List;
-
-@Setter
-@Getter
 @Entity
-@Table(name = "Stairs")
-public class Stairs {
-
+@Table(name = "Edges")
+class Edge {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    var id: Int? = null
 
-    private Integer floorId;
+    @Column(name = "nodes", columnDefinition = "integer[]", nullable = false)
+    var nodes: IntArray = intArrayOf()
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "node_id")
-    private Node node;
+    var floorId: Int? = null
 
-    @Column(columnDefinition = "jsonb")
-    @Type(JsonBinaryType.class)
-    private List<Point> points;
+    @Column(name = "distance", nullable = false)
+    var distance: Float = 0f
 
-    @Column(name = "floors", columnDefinition = "integer[]")
-    private int[] floors;
+    constructor()
 
+    constructor(nodes: IntArray, floorId: Int?, distance: Float) {
+        this.nodes = nodes
+        this.floorId = floorId
+        this.distance = distance
+    }
 }

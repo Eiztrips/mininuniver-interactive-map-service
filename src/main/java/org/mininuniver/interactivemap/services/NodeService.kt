@@ -17,29 +17,27 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactivemap.dto;
+package org.mininuniver.interactivemap.services
 
-import lombok.Getter;
-import lombok.Setter;
-import org.mininuniver.interactivemap.models.*;
+import org.mininuniver.interactivemap.models.Node
+import org.mininuniver.interactivemap.repositories.FloorRepository
+import org.mininuniver.interactivemap.repositories.NodeRepository
+import org.springframework.stereotype.Service
 
-import java.util.List;
+@Service
+class NodeService(
+    private val nodeRepository: NodeRepository,
+    private val floorRepository: FloorRepository
+) {
 
-@Getter
-@Setter
-public class FloorDTO {
-    private Floor floor;
-    private List<Room> rooms;
-    private List<Edge> edges;
-    private List<Stairs> stairs;
-    private List<Node> nodes;
-
-    public FloorDTO(Floor floor, List<Room> rooms, List<Edge> edges, List<Stairs> stairs, List<Node> nodes) {
-        this.floor = floor;
-        this.rooms = rooms;
-        this.edges = edges;
-        this.stairs = stairs;
-        this.nodes = nodes;
+    fun getAllNodes(): List<Node> {
+        return nodeRepository.findAll()
     }
 
+    fun getLastNodeId(number: Int): Node? {
+        val floor = floorRepository.findByFloorNumber(number)
+            .orElseThrow { RuntimeException("Этаж не найден") }
+        val nodes = nodeRepository.findAllByFloorId(floor.id)
+        return nodes.lastOrNull()
+    }
 }

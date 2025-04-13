@@ -17,17 +17,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactivemap.services;
+package org.mininuniver.interactivemap.models
 
-import org.mininuniver.interactivemap.models.Edge;
-import org.mininuniver.interactivemap.models.Node;
-import org.mininuniver.interactivemap.repositories.EdgeRepository;
-import org.mininuniver.interactivemap.repositories.NodeRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType
+import jakarta.persistence.*
+import org.hibernate.annotations.Type
+import org.mininuniver.interactivemap.models.submodels.Point
 
-import java.util.*;
+@Entity
+@Table(name = "Stairs")
+class Stairs {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Int? = null
 
-@Service
-public class EdgeService {
+    var floorId: Int? = null
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "node_id")
+    var node: Node? = null
+
+    @Column(columnDefinition = "jsonb")
+    @Type(JsonBinaryType::class)
+    var points: List<Point>? = null
+
+    @Column(name = "floors", columnDefinition = "integer[]")
+    var floors: IntArray? = null
 }

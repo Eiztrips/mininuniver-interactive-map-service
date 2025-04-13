@@ -23,7 +23,6 @@ import org.mininuniver.interactivemap.dto.FloorDTO;
 import org.mininuniver.interactivemap.dto.NodeDTO;
 import org.mininuniver.interactivemap.models.Node;
 import org.mininuniver.interactivemap.models.Room;
-import org.mininuniver.interactivemap.services.EdgeService;
 import org.mininuniver.interactivemap.services.FloorService;
 import org.mininuniver.interactivemap.services.NodeService;
 import org.mininuniver.interactivemap.services.RoomService;
@@ -37,14 +36,19 @@ import java.util.List;
 @RequestMapping("/api/map")
 public class MapController {
 
+    private final NodeService mapService;
+    private final RoomService roomService;
+    private final FloorService floorService;
+
     @Autowired
-    private NodeService mapService;
-    @Autowired
-    private RoomService roomService;
-    @Autowired
-    private EdgeService edgeService;
-    @Autowired
-    private FloorService floorService;
+    public MapController(
+            NodeService mapService,
+            RoomService roomService,
+            FloorService floorService) {
+        this.mapService = mapService;
+        this.roomService = roomService;
+        this.floorService = floorService;
+    }
 
     // FLOOR
 

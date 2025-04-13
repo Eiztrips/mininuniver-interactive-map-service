@@ -17,37 +17,26 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactivemap.models;
+package org.mininuniver.interactivemap.services
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.mininuniver.interactivemap.models.Room
+import org.mininuniver.interactivemap.repositories.RoomRepository
+import org.springframework.stereotype.Service
 
+@Service
+class RoomService(private val roomRepository: RoomRepository) {
 
-@Setter
-@Getter
-@NoArgsConstructor
-@Entity
-@Table(name = "Edges")
-public class Edge {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(name = "nodes", columnDefinition = "integer[]", nullable = false)
-    private int[] nodes;
-
-    private Integer floorId;
-
-    @Column(name = "distance", nullable = false)
-    private float distance;
-
-    public Edge(int[] nodes, Integer floorId, float distance) {
-        this.nodes = nodes;
-        this.floorId = floorId;
-        this.distance = distance;
+    fun getRoomByName(name: String): Room {
+        return roomRepository.findByName(name)
+            .orElseThrow { RuntimeException("Помещение $name не найдено") }
     }
 
+    fun getRoomById(id: Int): Room {
+        return roomRepository.findById(id)
+            .orElseThrow { RuntimeException("Помещение с ID:$id не найдено") }
+    }
+
+    fun getAllRooms(): List<Room> {
+        return roomRepository.findAll()
+    }
 }
