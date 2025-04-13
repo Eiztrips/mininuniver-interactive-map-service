@@ -17,27 +17,28 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactivemap.models
+package org.mininuniver.interactivemap.dto;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType
-import jakarta.persistence.*
-import org.hibernate.annotations.Type
-import org.mininuniver.interactivemap.models.submodels.Point
+import lombok.Getter;
+import lombok.Setter;
+import org.mininuniver.interactivemap.models.Node;
 
-@Entity
-@Table(name = "Rooms")
-class Room {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int? = null
+import java.util.Map;
 
-    var name: String? = null
+@Getter
+@Setter
+public class NodeDTO {
+    private Integer id;
+    private Integer nodeNumber;
+    private Integer floorId;
+    private Map<String, Object> pos;
+    private int[] neighbors;
 
-    var floorId: Int? = null
-
-    var nodeId: Int? = null
-
-    @Column(columnDefinition = "jsonb")
-    @Type(JsonBinaryType::class)
-    var points: List<Point>? = null
+    public NodeDTO(Node node) {
+        this.id = node.getId();
+        this.nodeNumber = node.getNodeNumber();
+        this.floorId = node.getFloorId() != null ? node.getFloorId() : null;
+        this.pos = node.getPos();
+        this.neighbors = node.getNeighbors();
+    }
 }

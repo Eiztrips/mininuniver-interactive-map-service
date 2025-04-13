@@ -17,27 +17,38 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactivemap.models
+package org.mininuniver.interactivemap.models;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType
-import jakarta.persistence.*
-import org.hibernate.annotations.Type
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Type;
+import org.mininuniver.interactivemap.utils.JsonbConverter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+@Setter
+@Getter
 @Entity
 @Table(name = "Nodes")
-class Node {
+public class Node {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int? = null
+    private Integer id;
 
-    var nodeNumber: Int? = null
+    private Integer nodeNumber;
 
-    var floorId: Int? = null
+    private Integer floorId;
 
     @Column(columnDefinition = "jsonb")
-    @Type(JsonBinaryType::class)
-    var pos: Map<String, Any>? = null
+    @Type(JsonBinaryType.class)
+    private Map<String, Object> pos;
 
     @Column(name = "neighbors", columnDefinition = "integer[]")
-    var neighbors: IntArray? = null
+    private int[] neighbors;
+
 }

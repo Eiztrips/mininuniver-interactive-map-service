@@ -17,14 +17,36 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactivemap.dto
+package org.mininuniver.interactivemap.models;
 
-import org.mininuniver.interactivemap.models.*
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Type;
+import org.mininuniver.interactivemap.models.submodels.Point;
+import org.mininuniver.interactivemap.utils.PointListJsonbConverter;
 
-data class FloorDTO(
-    var floor: Floor,
-    var rooms: List<Room>,
-    var edges: List<Edge>,
-    var stairs: List<Stairs>,
-    var nodes: List<Node>
-)
+import java.util.List;
+
+@Setter
+@Getter
+@Entity
+@Table(name = "Rooms")
+public class Room {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String name;
+
+    private Integer floorId;
+
+    private Integer nodeId;
+
+    @Column(columnDefinition = "jsonb")
+    @Type(JsonBinaryType.class)
+    private List<Point> points;
+
+}

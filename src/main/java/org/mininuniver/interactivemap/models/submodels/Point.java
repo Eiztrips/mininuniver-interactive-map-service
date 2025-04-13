@@ -17,25 +17,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactivemap.models
+package org.mininuniver.interactivemap.models.submodels;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType
-import jakarta.persistence.*
-import org.hibernate.annotations.Type
-import org.mininuniver.interactivemap.models.submodels.Point
 
-@Entity
-@Table(name = "Floors")
-class Floor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int? = null
+import lombok.Getter;
+import lombok.Setter;
 
-    var floorNumber: Int = 0
+@Getter
+@Setter
+public class Point {
+    private int x;
+    private int y;
 
-    var name: String? = null
+    public Point() {}
 
-    @Column(columnDefinition = "jsonb")
-    @Type(JsonBinaryType::class)
-    var points: List<Point>? = null
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 }
