@@ -53,8 +53,8 @@ public class FloorService {
         this.nodeRepository = nodeRepository;
     }
 
-    public FloorDTO getFloorData(int id) {
-        Floor floor = floorRepository.findById(id)
+    public FloorDTO getFloorData(int number) {
+        Floor floor = floorRepository.findByFloorNumber(number)
                 .orElseThrow(() -> new RuntimeException("Этаж не найден"));
 
         List<Room> rooms = roomRepository.findByFloorId(floor.getId());
@@ -69,14 +69,13 @@ public class FloorService {
     }
 
     @Transactional
-    public FloorDTO saveOrUpdateFloorData(int id, FloorDTO floorDTO) {
+    public FloorDTO updateFloorData(int id, FloorDTO floorDTO) {
         Floor floor = floorRepository.findById(id).orElseGet(Floor::new);
         floor.setFloorNumber(id);
         floor.setName(floorDTO.getFloor().getName());
         floor.setPoints(floorDTO.getFloor().getPoints());
-        floor = floorRepository.save(floor); // сначала сохранили, потом чистим всё остальное
+        floor = floorRepository.save(floor);
 
-        // Удаляем старое только после сохранения (иначе падение)
         roomRepository.deleteAllByFloorId(floor.getId());
         nodeRepository.deleteAllByFloorId(floor.getId());
         edgeRepository.deleteAllByFloorId(floor.getId());

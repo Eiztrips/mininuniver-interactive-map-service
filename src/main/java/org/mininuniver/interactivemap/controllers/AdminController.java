@@ -17,31 +17,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactivemap.services;
+package org.mininuniver.interactivemap.controllers;
 
-import org.mininuniver.interactivemap.models.Room;
-import org.mininuniver.interactivemap.repositories.RoomRepository;
+import org.mininuniver.interactivemap.dto.FloorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.mininuniver.interactivemap.services.FloorService;
 
-import java.util.List;
-
-@Service
-public class RoomService {
-
-    private final RoomRepository roomRepository;
+@RestController
+@RequestMapping("/api/admin")
+public class AdminController {
 
     @Autowired
-    public RoomService(RoomRepository roomRepository) {
-        this.roomRepository = roomRepository;
+    private FloorService floorService;
+
+    @DeleteMapping("/floors/{number}")
+    public ResponseEntity<Void> deleteFloor(@PathVariable int number) {
+        floorService.deleteFloor(number);
+        return ResponseEntity.noContent().build();
     }
 
-    public Room getRoomByName(String name) {
-        return roomRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException(String.format("Помещение %s не найдено", name)));
+    @PutMapping("/floors/{number}")
+    public FloorDTO updateFloorData(@PathVariable int number, @RequestBody FloorDTO floorDTO) {
+        return floorService.updateFloorData(number, floorDTO);
     }
 
-    public List<Room> getAllRooms() {
-        return roomRepository.findAll();
-    }
 }

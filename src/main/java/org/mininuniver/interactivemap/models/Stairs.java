@@ -41,9 +41,7 @@ public class Stairs {
 
     private Integer floorId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "node_id")
-    private Node node;
+    private Integer nodeId;
 
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)

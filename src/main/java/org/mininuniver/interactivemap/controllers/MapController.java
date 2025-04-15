@@ -20,15 +20,12 @@
 package org.mininuniver.interactivemap.controllers;
 
 import org.mininuniver.interactivemap.dto.FloorDTO;
-import org.mininuniver.interactivemap.dto.NodeDTO;
 import org.mininuniver.interactivemap.models.Node;
 import org.mininuniver.interactivemap.models.Room;
-import org.mininuniver.interactivemap.services.EdgeService;
 import org.mininuniver.interactivemap.services.FloorService;
 import org.mininuniver.interactivemap.services.NodeService;
 import org.mininuniver.interactivemap.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,22 +35,16 @@ import java.util.List;
 public class MapController {
 
     @Autowired
-    private NodeService mapService;
+    private NodeService nodeService;
     @Autowired
     private RoomService roomService;
     @Autowired
-    private EdgeService edgeService;
-    @Autowired
     private FloorService floorService;
 
-    // FLOOR
-
-    @GetMapping("/floors/{id}")
-    public FloorDTO getFloorById(@PathVariable int id) {
-        return floorService.getFloorData(id);
+    @GetMapping("/floors/{number}")
+    public FloorDTO getFloorByNumber(@PathVariable int number) {
+        return floorService.getFloorData(number);
     }
-
-    // ROOM
 
     @GetMapping("/rooms/{name}")
     public Room getRoomByName(@PathVariable String name) {
@@ -65,29 +56,9 @@ public class MapController {
         return roomService.getAllRooms();
     }
 
-    // NODE
-
     @GetMapping("/nodes")
     public List<Node> getAllNodes() {
-        return  mapService.getAllNodes();
+        return  nodeService.getAllNodes();
     }
 
-    // ADMIN
-
-    @GetMapping("floors/{number}/nodes/last")
-    public NodeDTO getLastNode(@PathVariable int number) {
-        Node node = mapService.getLastNodeId(number);
-        return node != null ? new NodeDTO(node) : null;
-    }
-
-    @DeleteMapping("/del/floors/{number}")
-    public ResponseEntity<Void> deleteFloor(@PathVariable int number) {
-        floorService.deleteFloor(number);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/set/floors/{number}")
-    public FloorDTO updateFloorData(@PathVariable int number, @RequestBody FloorDTO floorDTO) {
-        return floorService.saveOrUpdateFloorData(number, floorDTO);
-    }
 }
