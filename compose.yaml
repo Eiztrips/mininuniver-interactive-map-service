@@ -2,15 +2,15 @@ services:
   postgres:
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=mininuniver'
-      - 'POSTGRES_PASSWORD=admin'
-      - 'POSTGRES_USER=Admin'
+      - 'POSTGRES_DB=${PG_DB}'
+      - 'POSTGRES_PASSWORD=${PG_PASSWORD}'
+      - 'POSTGRES_USER=${PG_USER}'
     ports:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U Admin -d mininuniver"]
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,13 +25,13 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/mininuniver'
-      - 'SPRING_DATASOURCE_USERNAME=Admin'
-      - 'SPRING_DATASOURCE_PASSWORD=admin'
-      - 'ADMIN_USERNAME=admin'
-      - 'ADMIN_PASSWORD=secret_password'
-      - 'JWT_SECRET=verySecureKeyForJwtTokenSigningInDockerEnvironment'
-      - 'JWT_EXPIRATION=86400000'
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${PG_DB}'
+      - 'SPRING_DATASOURCE_USERNAME=${PG_USER}'
+      - 'SPRING_DATASOURCE_PASSWORD=${PG_PASSWORD}'
+      - 'ADMIN_USERNAME=${ADMIN_USER}'
+      - 'ADMIN_PASSWORD=${ADMIN_PASSWORD}'
+      - 'JWT_SECRET=${JWT_SECRET}'
+      - 'JWT_EXPIRATION=${JWT_EXPIRE}'
 
 volumes:
   postgres_data:
