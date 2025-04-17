@@ -32,6 +32,11 @@ public class AdminController {
     @Autowired
     private FloorService floorService;
 
+    @GetMapping("/test")
+    public String test() {
+        return "Test endpoint is working!";
+    }
+
     @DeleteMapping("/floors/{number}")
     public ResponseEntity<Void> deleteFloor(@PathVariable int number) {
         floorService.deleteFloor(number);
