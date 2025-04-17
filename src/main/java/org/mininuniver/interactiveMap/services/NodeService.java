@@ -31,19 +31,9 @@ import java.util.List;
 public class NodeService {
 
     private final NodeRepository nodeRepository;
-    private final FloorRepository floorRepository;
 
     public List<Node> getAllNodes() {
         return nodeRepository.findAll();
     }
 
-    public Node getLastNodeId(int number) {
-        Floor floor = floorRepository.findByFloorNumber(number)
-                .orElseThrow(() -> new RuntimeException("Этаж не найден"));;
-        List<Node> nodes = nodeRepository.findAllByFloorId(floor.getId());
-        if (nodes.isEmpty()) {
-            return null;
-        }
-        return nodes.getLast();
-    }
 }

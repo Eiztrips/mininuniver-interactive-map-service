@@ -7,7 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class StairsDTO {
+public class FloorShortDTO {
     private final Integer id;
-    private final Integer floorId;
+    private final Integer floorNumber;
+    private final String name;
 }

@@ -22,7 +22,8 @@ package org.mininuniver.interactiveMap.services;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
-import org.mininuniver.interactiveMap.dto.FloorDTO;
+import org.mininuniver.interactiveMap.dto.FloorDataDTO;
+import org.mininuniver.interactiveMap.dto.FloorShortDTO;
 import org.mininuniver.interactiveMap.models.*;
 import org.mininuniver.interactiveMap.repositories.*;
 import org.springframework.stereotype.Service;
@@ -43,20 +44,16 @@ public class FloorService {
     private final StairsRepository stairsRepository;
     private final NodeRepository nodeRepository;
 
-    public List<FloorDTO> getAllFloors() {
+    // GET
+
+    public List<FloorShortDTO> getAllFloors() {
         List<Floor> floors = floorRepository.findAll();
         return floors.stream()
-                .map(floor -> {
-                    List<Room> rooms = roomRepository.findByFloorId(floor.getId());
-                    List<Edge> edges = edgeRepository.findByFloorId(floor.getId());
-                    List<Stairs> stairs = stairsRepository.findByFloorId(floor.getId());
-                    List<Node> nodes = nodeRepository.findByFloorId(floor.getId());
-                    return new FloorDTO(floor, rooms, edges, stairs, nodes);
-                })
+                .map(floor -> new FloorShortDTO(floor.getId(), floor.getFloorNumber(), floor.getName()))
                 .toList();
     }
 
-    public FloorDTO getFloorData(int number) {
+    public FloorDataDTO getFloorData(int number) {
         Floor floor = floorRepository.findByFloorNumber(number)
                 .orElseThrow(() -> new RuntimeException("Этаж не найден"));
 
@@ -65,15 +62,17 @@ public class FloorService {
         List<Stairs> stairs = stairsRepository.findByFloorId(floor.getId());
         List<Node> nodes = nodeRepository.findByFloorId(floor.getId());
 
-        return new FloorDTO(floor, rooms, edges, stairs, nodes);
+        return new FloorDataDTO(floor, rooms, edges, stairs, nodes);
     }
 
+    // POST
+
     @Transactional
-    public FloorDTO updateFloorData(int id, FloorDTO floorDTO) {
+    public FloorDataDTO updateFloorData(int id, FloorDataDTO floorDataDTO) {
         Floor floor = floorRepository.findById(id).orElseGet(Floor::new);
         floor.setFloorNumber(id);
-        floor.setName(floorDTO.getFloor().getName());
-        floor.setPoints(floorDTO.getFloor().getPoints());
+        floor.setName(floorDataDTO.getFloor().getName());
+        floor.setPoints(floorDataDTO.getFloor().getPoints());
         floor = floorRepository.save(floor);
 
         roomRepository.deleteAllByFloorId(floor.getId());
@@ -83,7 +82,7 @@ public class FloorService {
 
         Map<Integer, Integer> nodeIdMapping = new HashMap<>();
 
-        for (Node node : floorDTO.getNodes()) {
+        for (Node node : floorDataDTO.getNodes()) {
             Integer oldId = node.getId();
             node.setId(null);
             node.setFloorId(floor.getId());
@@ -95,7 +94,7 @@ public class FloorService {
         for (Map.Entry<Integer, Integer> entry : nodeIdMapping.entrySet()) {
             Node node = nodeRepository.findById(entry.getValue()).orElseThrow();
 
-            int[] oldNeighbors = floorDTO.getNodes().stream()
+            int[] oldNeighbors = floorDataDTO.getNodes().stream()
                     .filter(n -> n.getId().equals(entry.getKey()))
                     .findFirst()
                     .map(Node::getNeighbors)
@@ -110,7 +109,7 @@ public class FloorService {
             }
         }
 
-        for (Edge edge : floorDTO.getEdges()) {
+        for (Edge edge : floorDataDTO.getEdges()) {
             edge.setId(null);
             edge.setFloorId(floor.getId());
             int[] newNodes = Arrays.stream(edge.getNodes())
@@ -120,7 +119,7 @@ public class FloorService {
             edgeRepository.save(edge);
         }
 
-        for (Room room : floorDTO.getRooms()) {
+        for (Room room : floorDataDTO.getRooms()) {
             room.setId(null);
             room.setFloorId(floor.getId());
             if (room.getNodeId() != null) {
@@ -132,15 +131,16 @@ public class FloorService {
             roomRepository.save(room);
         }
 
-        for (Stairs stair : floorDTO.getStairs()) {
+        for (Stairs stair : floorDataDTO.getStairs()) {
             stair.setId(null);
             stair.setFloorId(floor.getId());
             stairsRepository.save(stair);
         }
 
-        return floorDTO;
+        return floorDataDTO;
     }
 
+    // DELETE
 
     @Transactional
     public void deleteFloor(int number) {

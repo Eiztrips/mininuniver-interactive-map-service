@@ -20,7 +20,8 @@
 package org.mininuniver.interactiveMap.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.mininuniver.interactiveMap.dto.FloorDTO;
+import org.mininuniver.interactiveMap.dto.FloorDataDTO;
+import org.mininuniver.interactiveMap.dto.FloorShortDTO;
 import org.mininuniver.interactiveMap.models.Node;
 import org.mininuniver.interactiveMap.models.Room; // оптимизировать импорты
 import org.mininuniver.interactiveMap.services.FloorService;
@@ -40,12 +41,12 @@ public class MapController {
     private final FloorService floorService;
 
     @GetMapping("/floors/{number}")
-    public FloorDTO getFloorByNumber(@PathVariable int number) {
+    public FloorDataDTO getFloorByNumber(@PathVariable int number) {
         return floorService.getFloorData(number);
     }
 
     @GetMapping("/floors")
-    public List<FloorDTO> getAllFloors() {
+    public List<FloorShortDTO> getAllFloors() {
         return floorService.getAllFloors();
     }
 

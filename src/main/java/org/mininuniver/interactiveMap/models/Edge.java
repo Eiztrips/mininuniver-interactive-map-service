@@ -44,10 +44,4 @@ public class Edge {
     @Column(name = "distance", nullable = false)
     private float distance;
 
-    public Edge(int[] nodes, Integer floorId, float distance) {
-        this.nodes = nodes;
-        this.floorId = floorId;
-        this.distance = distance;
-    }
-
 }

@@ -29,7 +29,7 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class FloorDTO {
+public class FloorDataDTO {
     private final Floor floor;
     private final List<Room> rooms;
     private final List<Edge> edges;

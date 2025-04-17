@@ -19,22 +19,18 @@
 
 package org.mininuniver.interactiveMap.services;
 
+import lombok.RequiredArgsConstructor;
 import org.mininuniver.interactiveMap.models.Room;
 import org.mininuniver.interactiveMap.repositories.RoomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RoomService {
 
     private final RoomRepository roomRepository;
-
-    @Autowired
-    public RoomService(RoomRepository roomRepository) {
-        this.roomRepository = roomRepository;
-    }
 
     public Room getRoomByName(String name) {
         return roomRepository.findByName(name)

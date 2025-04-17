@@ -19,7 +19,7 @@
 
 package org.mininuniver.interactiveMap.controllers;
 
-import org.mininuniver.interactiveMap.dto.FloorDTO;
+import org.mininuniver.interactiveMap.dto.FloorDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,11 +32,6 @@ public class AdminController {
     @Autowired
     private FloorService floorService;
 
-    @GetMapping("/test")
-    public String test() {
-        return "Test endpoint is working!";
-    }
-
     @DeleteMapping("/floors/{number}")
     public ResponseEntity<Void> deleteFloor(@PathVariable int number) {
         floorService.deleteFloor(number);
@@ -44,8 +39,8 @@ public class AdminController {
     }
 
     @PutMapping("/floors/{number}")
-    public FloorDTO updateFloorData(@PathVariable int number, @RequestBody FloorDTO floorDTO) {
-        return floorService.updateFloorData(number, floorDTO);
+    public FloorDataDTO updateFloorData(@PathVariable int number, @RequestBody FloorDataDTO floorDataDTO) {
+        return floorService.updateFloorData(number, floorDataDTO);
     }
 
 }
