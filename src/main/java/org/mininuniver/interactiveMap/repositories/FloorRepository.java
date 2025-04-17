@@ -19,14 +19,17 @@
 
 package org.mininuniver.interactiveMap.repositories;
 
+import org.mininuniver.interactiveMap.dto.FloorDTO;
 import org.mininuniver.interactiveMap.models.Floor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface FloorRepository extends JpaRepository<Floor, Integer> {
 
     Optional<Floor> findByFloorNumber(int number);
+
 }

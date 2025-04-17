@@ -44,6 +44,11 @@ public class MapController {
         return floorService.getFloorData(number);
     }
 
+    @GetMapping("/floors")
+    public List<FloorDTO> getAllFloors() {
+        return floorService.getAllFloors();
+    }
+
     @GetMapping("/rooms/{name}")
     public Room getRoomByName(@PathVariable String name) {
         return roomService.getRoomByName(name);

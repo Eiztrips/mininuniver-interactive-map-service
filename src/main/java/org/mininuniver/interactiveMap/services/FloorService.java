@@ -43,6 +43,19 @@ public class FloorService {
     private final StairsRepository stairsRepository;
     private final NodeRepository nodeRepository;
 
+    public List<FloorDTO> getAllFloors() {
+        List<Floor> floors = floorRepository.findAll();
+        return floors.stream()
+                .map(floor -> {
+                    List<Room> rooms = roomRepository.findByFloorId(floor.getId());
+                    List<Edge> edges = edgeRepository.findByFloorId(floor.getId());
+                    List<Stairs> stairs = stairsRepository.findByFloorId(floor.getId());
+                    List<Node> nodes = nodeRepository.findByFloorId(floor.getId());
+                    return new FloorDTO(floor, rooms, edges, stairs, nodes);
+                })
+                .toList();
+    }
+
     public FloorDTO getFloorData(int number) {
         Floor floor = floorRepository.findByFloorNumber(number)
                 .orElseThrow(() -> new RuntimeException("Этаж не найден"));
