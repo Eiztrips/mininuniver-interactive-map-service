@@ -85,7 +85,7 @@ public class MapController {
             @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content)
     })
     @GetMapping("/rooms/{name}")
-    public Room getRoomByName(@PathVariable String name) {
+    public RoomDTO getRoomByName(@PathVariable String name) {
         return roomService.getRoomByName(name);
     }
 

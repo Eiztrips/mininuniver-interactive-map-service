@@ -33,9 +33,9 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
 
-    public Room getRoomByName(String name) {
-        return roomRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException(String.format("Помещение %s не найдено", name)));
+    public RoomDTO getRoomByName(String name) {
+        return new RoomDTO(roomRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException(String.format("Помещение %s не найдено", name))));
     }
 
     public List<RoomDTO> getAllRooms() {
