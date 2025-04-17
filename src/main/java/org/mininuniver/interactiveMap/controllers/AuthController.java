@@ -1,5 +1,9 @@
 package org.mininuniver.interactiveMap.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.mininuniver.interactiveMap.dto.AuthRequest;
 import org.mininuniver.interactiveMap.dto.AuthResponse;
@@ -24,6 +28,15 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
 
+    @Operation(summary = "Аутентификация пользователя и получение JWT токена")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешная аутентификация",
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Неверные учетные данные", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content)
+    })
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthRequest authRequest) throws Exception {
         try {

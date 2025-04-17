@@ -19,6 +19,10 @@
 
 package org.mininuniver.interactiveMap.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.mininuniver.interactiveMap.dto.FloorDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +36,22 @@ public class AdminController {
     @Autowired
     private FloorService floorService;
 
+    @Operation(summary = "Удалить этаж по номеру")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Этаж успешно удален"),
+            @ApiResponse(responseCode = "404", description = "Этаж не найден", content = @Content)
+    })
     @DeleteMapping("/floors/{number}")
     public ResponseEntity<Void> deleteFloor(@PathVariable int number) {
         floorService.deleteFloor(number);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Изменить/добавить данные этажа по номеру")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Этаж успешно изменен/добавлен"),
+            @ApiResponse(responseCode = "404", description = "Этаж не найден", content = @Content)
+    })
     @PutMapping("/floors/{number}")
     public FloorDataDTO updateFloorData(@PathVariable int number, @RequestBody FloorDataDTO floorDataDTO) {
         return floorService.updateFloorData(number, floorDataDTO);
