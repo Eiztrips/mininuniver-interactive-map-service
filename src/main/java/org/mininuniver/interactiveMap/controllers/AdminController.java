@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.mininuniver.interactiveMap.dto.FloorDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ import org.mininuniver.interactiveMap.services.FloorService;
 
 @RestController
 @RequestMapping("/api/admin")
+@Tag(name = "Admin API", description = "API для администраторов")
 public class AdminController {
 
     @Autowired
