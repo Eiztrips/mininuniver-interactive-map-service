@@ -22,8 +22,13 @@ package org.mininuniver.interactiveMap.services;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
-import org.mininuniver.interactiveMap.dto.FloorDataDTO;
-import org.mininuniver.interactiveMap.dto.FloorShortDTO;
+import org.mininuniver.interactiveMap.dto.models.*;
+import org.mininuniver.interactiveMap.dto.models.edge.EdgeDTO;
+import org.mininuniver.interactiveMap.dto.models.node.NodeDTO;
+import org.mininuniver.interactiveMap.dto.models.room.RoomDTO;
+import org.mininuniver.interactiveMap.dto.models.stairs.StairsDTO;
+import org.mininuniver.interactiveMap.dto.models.floor.FloorShortDTO;
+import org.mininuniver.interactiveMap.dto.models.floor.FloorDTO;
 import org.mininuniver.interactiveMap.models.*;
 import org.mininuniver.interactiveMap.repositories.*;
 import org.springframework.stereotype.Service;
@@ -53,26 +58,41 @@ public class FloorService {
                 .toList();
     }
 
-    public FloorDataDTO getFloorData(int number) {
-        Floor floor = floorRepository.findByFloorNumber(number)
-                .orElseThrow(() -> new RuntimeException("Этаж не найден"));
+    public MapDTO getFloorData(int number) {
+        FloorDTO floor = new FloorDTO(floorRepository.findByFloorNumber(number)
+                .orElseThrow(() -> new RuntimeException("Этаж не найден")));
 
-        List<Room> rooms = roomRepository.findByFloorId(floor.getId());
-        List<Edge> edges = edgeRepository.findByFloorId(floor.getId());
-        List<Stairs> stairs = stairsRepository.findByFloorId(floor.getId());
-        List<Node> nodes = nodeRepository.findByFloorId(floor.getId());
+        List<RoomDTO> rooms = roomRepository.findByFloorId(floor.getId())
+                .stream()
+                .map(RoomDTO::new)
+                .toList();
 
-        return new FloorDataDTO(floor, rooms, edges, stairs, nodes);
+        List<EdgeDTO> edges = edgeRepository.findByFloorId(floor.getId())
+                .stream()
+                .map(EdgeDTO::new)
+                .toList();
+
+        List<StairsDTO> stairs = stairsRepository.findByFloorId(floor.getId())
+                .stream()
+                .map(StairsDTO::new)
+                .toList();
+
+        List<NodeDTO> nodes = nodeRepository.findByFloorId(floor.getId())
+                .stream()
+                .map(NodeDTO::new)
+                .toList();
+
+        return new MapDTO(floor, rooms, edges, stairs, nodes);
     }
 
     // POST
 
     @Transactional
-    public FloorDataDTO updateFloorData(int id, FloorDataDTO floorDataDTO) {
+    public MapDTO updateFloorData(int id, MapDTO mapDTO) {
         Floor floor = floorRepository.findById(id).orElseGet(Floor::new);
         floor.setFloorNumber(id);
-        floor.setName(floorDataDTO.getFloor().getName());
-        floor.setPoints(floorDataDTO.getFloor().getPoints());
+        floor.setName(mapDTO.getFloor().getName());
+        floor.setPoints(mapDTO.getFloor().getPoints());
         floor = floorRepository.save(floor);
 
         roomRepository.deleteAllByFloorId(floor.getId());
@@ -82,22 +102,22 @@ public class FloorService {
 
         Map<Integer, Integer> nodeIdMapping = new HashMap<>();
 
-        for (Node node : floorDataDTO.getNodes()) {
+        for (NodeDTO node : mapDTO.getNodes()) {
             Integer oldId = node.getId();
             node.setId(null);
             node.setFloorId(floor.getId());
             node.setNodeNumber(oldId);
-            Node saved = nodeRepository.save(node);
+            Node saved = nodeRepository.save(new Node(node));
             nodeIdMapping.put(oldId, saved.getId());
         }
 
         for (Map.Entry<Integer, Integer> entry : nodeIdMapping.entrySet()) {
-            Node node = nodeRepository.findById(entry.getValue()).orElseThrow();
+            NodeDTO node = new NodeDTO(nodeRepository.findById(entry.getValue()).orElseThrow());
 
-            int[] oldNeighbors = floorDataDTO.getNodes().stream()
+            int[] oldNeighbors = mapDTO.getNodes().stream()
                     .filter(n -> n.getId().equals(entry.getKey()))
                     .findFirst()
-                    .map(Node::getNeighbors)
+                    .map(NodeDTO::getNeighbors)
                     .orElse(null);
 
             if (oldNeighbors != null) {
@@ -105,21 +125,21 @@ public class FloorService {
                         .map(n -> nodeIdMapping.getOrDefault(n, n))
                         .toArray();
                 node.setNeighbors(newNeighbors);
-                nodeRepository.save(node);
+                nodeRepository.save(new Node(node));
             }
         }
 
-        for (Edge edge : floorDataDTO.getEdges()) {
+        for (EdgeDTO edge : mapDTO.getEdges()) {
             edge.setId(null);
             edge.setFloorId(floor.getId());
             int[] newNodes = Arrays.stream(edge.getNodes())
                     .map(n -> nodeIdMapping.getOrDefault(n, n))
                     .toArray();
             edge.setNodes(newNodes);
-            edgeRepository.save(edge);
+            edgeRepository.save(new Edge(edge));
         }
 
-        for (Room room : floorDataDTO.getRooms()) {
+        for (RoomDTO room : mapDTO.getRooms()) {
             room.setId(null);
             room.setFloorId(floor.getId());
             if (room.getNodeId() != null) {
@@ -128,16 +148,16 @@ public class FloorService {
                     room.setNodeId(nodeIdMapping.get(oldNodeId));
                 }
             }
-            roomRepository.save(room);
+            roomRepository.save(new Room(room));
         }
 
-        for (Stairs stair : floorDataDTO.getStairs()) {
+        for (StairsDTO stair : mapDTO.getStairs()) {
             stair.setId(null);
             stair.setFloorId(floor.getId());
-            stairsRepository.save(stair);
+            stairsRepository.save(new Stairs(stair));
         }
 
-        return floorDataDTO;
+        return mapDTO;
     }
 
     // DELETE

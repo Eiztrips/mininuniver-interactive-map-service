@@ -22,8 +22,10 @@ package org.mininuniver.interactiveMap.models;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
+import org.mininuniver.interactiveMap.dto.models.stairs.StairsDTO;
 import org.mininuniver.interactiveMap.models.submodels.Point;
 
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "Stairs")
 public class Stairs {
 
@@ -38,9 +41,14 @@ public class Stairs {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer floorId;
 
-    private Integer nodeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "floor_id")
+    private Floor floor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "node_id")
+    private Node node;
 
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)
@@ -49,4 +57,17 @@ public class Stairs {
     @Column(name = "floors", columnDefinition = "integer[]")
     private int[] floors;
 
+    public Stairs(StairsDTO stair) {
+        this.id = stair.getId();
+        if (stair.getFloorId() != null) {
+            this.floor = new Floor();
+            this.floor.setId(stair.getFloorId());
+        } else this.floor = null;
+        if (stair.getNodeId() != null) {
+            this.node = new Node();
+            this.node.setId(stair.getNodeId());
+        } else this.node = null;
+        this.points = stair.getPoints();
+        this.floors = stair.getFloors();
+    }
 }

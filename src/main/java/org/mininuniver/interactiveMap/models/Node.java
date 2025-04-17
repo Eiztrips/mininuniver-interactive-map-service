@@ -22,14 +22,17 @@ package org.mininuniver.interactiveMap.models;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
+import org.mininuniver.interactiveMap.dto.models.node.NodeDTO;
 
 import java.util.Map;
 
 @Setter
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "Nodes")
 public class Node {
 
@@ -39,7 +42,9 @@ public class Node {
 
     private Integer nodeNumber;
 
-    private Integer floorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "floor_id")
+    private Floor floor;
 
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)
@@ -48,4 +53,13 @@ public class Node {
     @Column(name = "neighbors", columnDefinition = "integer[]")
     private int[] neighbors;
 
+    public Node(NodeDTO node) {
+        this.nodeNumber = node.getNodeNumber();
+        if (node.getFloorId() != null) {
+            this.floor = new Floor();
+            this.floor.setId(node.getFloorId());
+        }
+        this.pos = node.getPos();
+        this.neighbors = node.getNeighbors();
+    }
 }

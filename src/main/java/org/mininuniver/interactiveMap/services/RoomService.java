@@ -20,6 +20,7 @@
 package org.mininuniver.interactiveMap.services;
 
 import lombok.RequiredArgsConstructor;
+import org.mininuniver.interactiveMap.dto.models.room.RoomDTO;
 import org.mininuniver.interactiveMap.models.Room;
 import org.mininuniver.interactiveMap.repositories.RoomRepository;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,10 @@ public class RoomService {
                 .orElseThrow(() -> new RuntimeException(String.format("Помещение %s не найдено", name)));
     }
 
-    public List<Room> getAllRooms() {
-        return roomRepository.findAll();
+    public List<RoomDTO> getAllRooms() {
+        return roomRepository.findAll()
+                .stream()
+                .map(RoomDTO::new)
+                .toList();
     }
 }

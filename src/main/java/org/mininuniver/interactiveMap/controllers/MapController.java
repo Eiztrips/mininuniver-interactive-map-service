@@ -27,8 +27,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.mininuniver.interactiveMap.dto.FloorDataDTO;
-import org.mininuniver.interactiveMap.dto.FloorShortDTO;
+import org.mininuniver.interactiveMap.dto.models.MapDTO;
+import org.mininuniver.interactiveMap.dto.models.floor.FloorShortDTO;
+import org.mininuniver.interactiveMap.dto.models.node.NodeDTO;
+import org.mininuniver.interactiveMap.dto.models.room.RoomDTO;
 import org.mininuniver.interactiveMap.models.Node;
 import org.mininuniver.interactiveMap.models.Room; // оптимизировать импорты
 import org.mininuniver.interactiveMap.services.FloorService;
@@ -52,12 +54,12 @@ public class MapController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Этаж найден",
                 content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = FloorDataDTO.class))),
+                schema = @Schema(implementation = MapDTO.class))),
             @ApiResponse(responseCode = "403", description = "Ошибка запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content)
     })
     @GetMapping("/floors/{number}")
-    public FloorDataDTO getFloorByNumber(@PathVariable @Min(0) int number) {
+    public MapDTO getFloorByNumber(@PathVariable @Min(0) int number) {
         return floorService.getFloorData(number);
     }
 
@@ -96,7 +98,7 @@ public class MapController {
             @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content)
     })
     @GetMapping("/rooms")
-    public List<Room> getAllRooms() {
+    public List<RoomDTO> getAllRooms() {
         return roomService.getAllRooms();
     }
 
@@ -109,8 +111,8 @@ public class MapController {
             @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content)
     })
     @GetMapping("/nodes")
-    public List<Node> getAllNodes() {
-        return  nodeService.getAllNodes();
+    public List<NodeDTO> getAllNodes() {
+        return nodeService.getAllNodes();
     }
 
 }

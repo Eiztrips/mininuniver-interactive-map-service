@@ -1,4 +1,4 @@
-package org.mininuniver.interactiveMap.dto;
+package org.mininuniver.interactiveMap.dto.models.floor;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

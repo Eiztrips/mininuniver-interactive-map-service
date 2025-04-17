@@ -22,8 +22,10 @@ package org.mininuniver.interactiveMap.models;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
+import org.mininuniver.interactiveMap.dto.models.room.RoomDTO;
 import org.mininuniver.interactiveMap.models.submodels.Point;
 
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "Rooms")
 public class Room {
 
@@ -40,12 +43,32 @@ public class Room {
 
     private String name;
 
-    private Integer floorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "floor_id")
+    private Floor floor;
 
-    private Integer nodeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "node_id")
+    private Node node;
 
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)
     private List<Point> points;
 
+    public Room(RoomDTO room) {
+        this.name = room.getName();
+        if (room.getFloorId() != null) {
+            this.floor = new Floor();
+            this.floor.setId(room.getFloorId());
+        } else {
+            this.floor = null;
+        }
+        if (room.getNodeId() != null) {
+            this.node = new Node();
+            this.node.setId(room.getNodeId());
+        } else {
+            this.node = null;
+        }
+        this.points = room.getPoints();
+    }
 }

@@ -17,22 +17,26 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.dto;
+package org.mininuniver.interactiveMap.dto.models;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.mininuniver.interactiveMap.models.*;
+import org.mininuniver.interactiveMap.dto.models.edge.EdgeDTO;
+import org.mininuniver.interactiveMap.dto.models.floor.FloorDTO;
+import org.mininuniver.interactiveMap.dto.models.node.NodeDTO;
+import org.mininuniver.interactiveMap.dto.models.room.RoomDTO;
+import org.mininuniver.interactiveMap.dto.models.stairs.StairsDTO;
 
 import java.util.List;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class FloorDataDTO {
-    private final Floor floor;
-    private final List<Room> rooms;
-    private final List<Edge> edges;
-    private final List<Stairs> stairs;
-    private final List<Node> nodes;
+public class MapDTO {
+    private final FloorDTO floor;
+    private final List<RoomDTO> rooms;
+    private final List<EdgeDTO> edges;
+    private final List<StairsDTO> stairs;
+    private final List<NodeDTO> nodes;
 }

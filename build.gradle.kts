@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.mininuniver"
-version = "0.0.1-SNAPSHOT"
+version = "0.1.1-SNAPSHOT"
 
 ext {
     set("author", "Eiztrips")
@@ -33,6 +33,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
     implementation("io.swagger.core.v3:swagger-models:2.2.20")

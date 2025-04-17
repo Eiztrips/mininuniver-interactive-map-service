@@ -23,12 +23,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.mininuniver.interactiveMap.dto.models.edge.EdgeDTO;
 
 
 @Setter
 @Getter
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
 @Table(name = "Edges")
 public class Edge {
 
@@ -39,9 +40,21 @@ public class Edge {
     @Column(name = "nodes", columnDefinition = "integer[]", nullable = false)
     private int[] nodes;
 
-    private Integer floorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "floor_id")
+    private Floor floor;
 
     @Column(name = "distance", nullable = false)
     private float distance;
+
+    public Edge(EdgeDTO edgeDTO) {
+        this.id = edgeDTO.getId();
+        if (edgeDTO.getFloorId() != null) {
+            this.floor = new Floor();
+            this.floor.setId(edgeDTO.getFloorId());
+        }
+        this.distance = edgeDTO.getDistance();
+        this.nodes = edgeDTO.getNodes();
+    }
 
 }

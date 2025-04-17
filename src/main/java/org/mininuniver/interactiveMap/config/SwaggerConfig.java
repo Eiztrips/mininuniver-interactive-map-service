@@ -16,12 +16,13 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Интерактивная карта Mininuniver API")
                         .description("API для взаимодействия с интерактивной картой")
-                        .version("1.0.0")
+                        .version("0.1.1")
                         .contact(new Contact()
                                 .name("Eiztrips")
                                 .url("https://github.com/Eiztrips"))
                         .license(new License()
                                 .name("GNU Affero General Public License v3")
                                 .url("https://www.gnu.org/licenses/agpl-3.0.html")));
+
     }
 }

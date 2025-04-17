@@ -20,6 +20,7 @@
 package org.mininuniver.interactiveMap.services;
 
 import lombok.RequiredArgsConstructor;
+import org.mininuniver.interactiveMap.dto.models.node.NodeDTO;
 import org.mininuniver.interactiveMap.models.*;
 import org.mininuniver.interactiveMap.repositories.*;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,11 @@ public class NodeService {
 
     private final NodeRepository nodeRepository;
 
-    public List<Node> getAllNodes() {
-        return nodeRepository.findAll();
+    public List<NodeDTO> getAllNodes() {
+        return nodeRepository.findAll()
+                .stream()
+                .map(NodeDTO::new)
+                .toList();
     }
 
 }

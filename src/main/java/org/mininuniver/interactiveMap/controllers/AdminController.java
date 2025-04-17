@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.mininuniver.interactiveMap.dto.FloorDataDTO;
+import org.mininuniver.interactiveMap.dto.models.MapDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,8 +55,8 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "Этаж не найден", content = @Content)
     })
     @PutMapping("/floors/{number}")
-    public FloorDataDTO updateFloorData(@PathVariable int number, @RequestBody FloorDataDTO floorDataDTO) {
-        return floorService.updateFloorData(number, floorDataDTO);
+    public MapDTO updateFloorData(@PathVariable int number, @RequestBody MapDTO mapDTO) {
+        return floorService.updateFloorData(number, mapDTO);
     }
 
 }
