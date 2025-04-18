@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.mininuniver.interactiveMap.dto.models.room.RoomDTO;
-import org.mininuniver.interactiveMap.models.submodels.Point;
+import org.mininuniver.interactiveMap.dto.models.submodels.PointDTO;
 
 import java.util.List;
 
@@ -53,7 +53,7 @@ public class Room {
 
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)
-    private List<Point> points;
+    private List<PointDTO> points;
 
     public Room(RoomDTO room) {
         this.name = room.getName();

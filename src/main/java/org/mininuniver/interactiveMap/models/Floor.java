@@ -24,7 +24,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-import org.mininuniver.interactiveMap.models.submodels.Point;
+import org.mininuniver.interactiveMap.dto.models.submodels.PointDTO;
 
 import java.util.List;
 
@@ -44,6 +44,6 @@ public class Floor {
 
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)
-    private List<Point> points;
+    private List<PointDTO> points;
 
 }

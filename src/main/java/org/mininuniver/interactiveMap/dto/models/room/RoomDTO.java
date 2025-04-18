@@ -3,7 +3,7 @@ package org.mininuniver.interactiveMap.dto.models.room;
 import lombok.Getter;
 import lombok.Setter;
 import org.mininuniver.interactiveMap.models.Room;
-import org.mininuniver.interactiveMap.models.submodels.Point;
+import org.mininuniver.interactiveMap.dto.models.submodels.PointDTO;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class RoomDTO {
     private String name;
     private Integer floorId;
     private Integer nodeId;
-    private List<Point> points;
+    private List<PointDTO> points;
 
     public RoomDTO(Room room) {
         this.id = room.getId();

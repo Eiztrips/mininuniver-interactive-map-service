@@ -17,7 +17,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.models.submodels;
+package org.mininuniver.interactiveMap.dto.models.submodels;
 
 
 import lombok.Getter;
@@ -25,11 +25,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Point {
+public class PointDTO {
     private int x;
     private int y;
 
-    public Point(int x, int y) {
+    public PointDTO(int x, int y) {
         this.x = x;
         this.y = y;
     }

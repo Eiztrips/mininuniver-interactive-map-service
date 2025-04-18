@@ -3,7 +3,7 @@ package org.mininuniver.interactiveMap.dto.models.stairs;
 import lombok.Getter;
 import lombok.Setter;
 import org.mininuniver.interactiveMap.models.Stairs;
-import org.mininuniver.interactiveMap.models.submodels.Point;
+import org.mininuniver.interactiveMap.dto.models.submodels.PointDTO;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class StairsDTO {
     private Integer id;
     private Integer floorId;
     private Integer nodeId;
-    private List<Point> points;
+    private List<PointDTO> points;
     private int[] floors;
 
     public StairsDTO(Stairs stairs) {

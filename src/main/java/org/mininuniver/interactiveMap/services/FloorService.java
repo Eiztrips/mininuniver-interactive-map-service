@@ -49,8 +49,6 @@ public class FloorService {
     private final StairsRepository stairsRepository;
     private final NodeRepository nodeRepository;
 
-    // GET
-
     public List<FloorShortDTO> getAllFloors() {
         List<Floor> floors = floorRepository.findAll();
         return floors.stream()
@@ -84,8 +82,6 @@ public class FloorService {
 
         return new MapDTO(floor, rooms, edges, stairs, nodes);
     }
-
-    // POST
 
     @Transactional
     public MapDTO updateFloorData(int id, MapDTO mapDTO) {
@@ -159,8 +155,6 @@ public class FloorService {
 
         return mapDTO;
     }
-
-    // DELETE
 
     @Transactional
     public void deleteFloor(int number) {
