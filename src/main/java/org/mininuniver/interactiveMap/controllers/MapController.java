@@ -60,7 +60,7 @@ public class MapController {
     })
     @GetMapping("/floors/{number}")
     public MapDTO getFloorByNumber(@PathVariable @Min(0) int number) {
-        return floorService.getFloorData(number);
+        return floorService.getMapData(number);
     }
 
     @Operation(summary = "Получить все объекты этажей (без Points)")

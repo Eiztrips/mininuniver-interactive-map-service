@@ -58,7 +58,7 @@ public class FloorService {
                 .toList();
     }
 
-    public MapDTO getFloorData(int number) {
+    public MapDTO getMapData(int number) {
         FloorDTO floor = new FloorDTO(floorRepository.findByFloorNumber(number)
                 .orElseThrow(() -> new RuntimeException("Этаж не найден")));
 
