@@ -22,9 +22,9 @@ package org.mininuniver.interactiveMap.dto.models;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.mininuniver.interactiveMap.dto.models.edge.EdgeDTO;
 import org.mininuniver.interactiveMap.dto.models.floor.FloorDTO;
 import org.mininuniver.interactiveMap.dto.models.node.NodeDTO;
+import org.mininuniver.interactiveMap.dto.models.path.PathDTO;
 import org.mininuniver.interactiveMap.dto.models.room.RoomDTO;
 import org.mininuniver.interactiveMap.dto.models.stairs.StairsDTO;
 
@@ -36,7 +36,7 @@ import java.util.List;
 public class MapDTO {
     private final FloorDTO floor;
     private final List<RoomDTO> rooms;
-    private final List<EdgeDTO> edges;
     private final List<StairsDTO> stairs;
     private final List<NodeDTO> nodes;
+    private final List<PathDTO> paths;
 }

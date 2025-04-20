@@ -19,6 +19,7 @@
 
 package org.mininuniver.interactiveMap.models;
 
+import com.vladmihalcea.hibernate.type.array.IntArrayType;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -51,6 +52,7 @@ public class Node {
     private Map<String, Object> pos;
 
     @Column(name = "neighbors", columnDefinition = "integer[]")
+    @Type(IntArrayType.class)
     private int[] neighbors;
 
     public Node(NodeDTO node) {

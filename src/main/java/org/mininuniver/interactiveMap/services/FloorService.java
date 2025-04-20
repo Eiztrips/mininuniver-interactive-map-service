@@ -23,8 +23,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.mininuniver.interactiveMap.dto.models.*;
-import org.mininuniver.interactiveMap.dto.models.edge.EdgeDTO;
 import org.mininuniver.interactiveMap.dto.models.node.NodeDTO;
+import org.mininuniver.interactiveMap.dto.models.path.PathDTO;
 import org.mininuniver.interactiveMap.dto.models.room.RoomDTO;
 import org.mininuniver.interactiveMap.dto.models.stairs.StairsDTO;
 import org.mininuniver.interactiveMap.dto.models.floor.FloorShortDTO;
@@ -45,9 +45,9 @@ public class FloorService {
 
     private final FloorRepository floorRepository;
     private final RoomRepository roomRepository;
-    private final EdgeRepository edgeRepository;
     private final StairsRepository stairsRepository;
     private final NodeRepository nodeRepository;
+    private final PathRepository pathRepository;
 
     public List<FloorShortDTO> getAllFloors() {
         List<Floor> floors = floorRepository.findAll();
@@ -65,14 +65,14 @@ public class FloorService {
                 .map(RoomDTO::new)
                 .toList();
 
-        List<EdgeDTO> edges = edgeRepository.findByFloorId(floor.getId())
-                .stream()
-                .map(EdgeDTO::new)
-                .toList();
-
         List<StairsDTO> stairs = stairsRepository.findByFloorId(floor.getId())
                 .stream()
                 .map(StairsDTO::new)
+                .toList();
+
+        List<PathDTO> paths = pathRepository.findByFloorId(floor.getId())
+                .stream()
+                .map(PathDTO::new)
                 .toList();
 
         List<NodeDTO> nodes = nodeRepository.findByFloorId(floor.getId())
@@ -80,7 +80,7 @@ public class FloorService {
                 .map(NodeDTO::new)
                 .toList();
 
-        return new MapDTO(floor, rooms, edges, stairs, nodes);
+        return new MapDTO(floor, rooms, stairs, nodes, paths);
     }
 
     @Transactional
@@ -93,7 +93,6 @@ public class FloorService {
 
         roomRepository.deleteAllByFloorId(floor.getId());
         nodeRepository.deleteAllByFloorId(floor.getId());
-        edgeRepository.deleteAllByFloorId(floor.getId());
         stairsRepository.deleteAllByFloorId(floor.getId());
 
         Map<Integer, Integer> nodeIdMapping = new HashMap<>();
@@ -125,16 +124,6 @@ public class FloorService {
             }
         }
 
-        for (EdgeDTO edge : mapDTO.getEdges()) {
-            edge.setId(null);
-            edge.setFloorId(floor.getId());
-            int[] newNodes = Arrays.stream(edge.getNodes())
-                    .map(n -> nodeIdMapping.getOrDefault(n, n))
-                    .toArray();
-            edge.setNodes(newNodes);
-            edgeRepository.save(new Edge(edge));
-        }
-
         for (RoomDTO room : mapDTO.getRooms()) {
             room.setId(null);
             room.setFloorId(floor.getId());
@@ -163,7 +152,6 @@ public class FloorService {
 
         try {
             roomRepository.deleteAllByFloorId(floor.getId());
-            edgeRepository.deleteAllByFloorId(floor.getId());
             stairsRepository.deleteAllByFloorId(floor.getId());
             nodeRepository.deleteAllByFloorId(floor.getId());
             floorRepository.delete(floor);
