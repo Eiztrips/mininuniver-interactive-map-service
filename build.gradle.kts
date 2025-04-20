@@ -31,7 +31,7 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.7.3")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")

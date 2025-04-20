@@ -1,13 +1,12 @@
 package org.mininuniver.interactiveMap.models;
 
-import com.vladmihalcea.hibernate.type.array.IntArrayType;
+import io.hypersistence.utils.hibernate.type.array.IntArrayType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.mininuniver.interactiveMap.dto.models.path.PathDTO;
-import org.mininuniver.interactiveMap.dto.models.room.RoomDTO;
 
 import java.util.List;
 
@@ -23,6 +22,10 @@ public class Path {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "floor_id")
+    private Floor floor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_room_id")
     private Room firstRoom;
 
@@ -35,6 +38,11 @@ public class Path {
     private int[] nodesInPath;
 
     public Path(PathDTO path) {
+        if (path.getFloorId() != null) {
+            this.floor = new Floor();
+            this.floor.setId(path.getFloorId());
+        }
+
         if (path.getFirstRoomId() != null) {
             this.firstRoom = new Room();
             this.firstRoom.setId(path.getFirstRoomId());
@@ -47,5 +55,4 @@ public class Path {
 
         this.nodesInPath = path.getNodesInPath();
     }
-
 }
