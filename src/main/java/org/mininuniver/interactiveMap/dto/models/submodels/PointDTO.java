@@ -19,12 +19,13 @@
 
 package org.mininuniver.interactiveMap.dto.models.submodels;
 
-
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class PointDTO {
     private int x;
     private int y;

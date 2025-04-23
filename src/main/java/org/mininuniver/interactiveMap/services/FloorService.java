@@ -58,7 +58,7 @@ public class FloorService {
 
     public MapDTO getMapData(int number) {
         FloorDTO floor = new FloorDTO(floorRepository.findByFloorNumber(number)
-                .orElseThrow(() -> new RuntimeException("Этаж не найден")));
+                .orElseThrow(() -> new EntityNotFoundException("Этаж не найден")));
 
         List<RoomDTO> rooms = roomRepository.findByFloorId(floor.getId())
                 .stream()
