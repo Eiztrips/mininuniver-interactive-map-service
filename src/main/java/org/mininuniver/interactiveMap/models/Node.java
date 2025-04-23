@@ -56,6 +56,7 @@ public class Node {
     private int[] neighbors;
 
     public Node(NodeDTO node) {
+        this.id = node.getId();
         this.nodeNumber = node.getNodeNumber();
         if (node.getFloorId() != null) {
             this.floor = new Floor();
