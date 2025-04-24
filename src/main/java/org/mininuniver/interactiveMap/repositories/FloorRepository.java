@@ -28,6 +28,6 @@ import java.util.Optional;
 @Repository
 public interface FloorRepository extends JpaRepository<Floor, Integer> {
 
-    Optional<Floor> findByFloorNumber(int number);
+    Optional<Floor> findByNumber(int number);
 
 }

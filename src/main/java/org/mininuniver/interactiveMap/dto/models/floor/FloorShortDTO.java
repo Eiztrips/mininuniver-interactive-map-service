@@ -29,12 +29,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FloorShortDTO {
     private Integer id;
-    private Integer floorNumber;
+    private Integer number;
     private String name;
 
-    public FloorShortDTO(Integer id, Integer floorNumber, String name) {
+    public FloorShortDTO(Integer id, Integer number, String name) {
         this.id = id;
-        this.floorNumber = floorNumber;
+        this.number = number;
         this.name = name;
     }
 }

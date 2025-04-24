@@ -32,13 +32,13 @@ import java.util.List;
 @NoArgsConstructor
 public class FloorDTO {
     private Integer id;
-    private Integer floorNumber;
+    private Integer number;
     private String name;
     private List<PointDTO> points;
 
     public FloorDTO(Floor floor) {
         this.id = floor.getId();
-        this.floorNumber = floor.getFloorNumber();
+        this.number = floor.getNumber();
         this.name = floor.getName();
         this.points = floor.getPoints();
     }

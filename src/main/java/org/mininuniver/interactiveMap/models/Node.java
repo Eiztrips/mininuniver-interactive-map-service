@@ -41,8 +41,6 @@ public class Node {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer nodeNumber;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "floor_id")
     private Floor floor;
@@ -57,7 +55,6 @@ public class Node {
 
     public Node(NodeDTO node) {
         this.id = node.getId();
-        this.nodeNumber = node.getNodeNumber();
         if (node.getFloorId() != null) {
             this.floor = new Floor();
             this.floor.setId(node.getFloorId());

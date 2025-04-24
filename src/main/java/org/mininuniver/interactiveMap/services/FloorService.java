@@ -52,12 +52,12 @@ public class FloorService {
     public List<FloorShortDTO> getAllFloors() {
         List<Floor> floors = floorRepository.findAll();
         return floors.stream()
-                .map(floor -> new FloorShortDTO(floor.getId(), floor.getFloorNumber(), floor.getName()))
+                .map(floor -> new FloorShortDTO(floor.getId(), floor.getNumber(), floor.getName()))
                 .toList();
     }
 
     public MapDTO getMapData(int number) {
-        FloorDTO floor = new FloorDTO(floorRepository.findByFloorNumber(number)
+        FloorDTO floor = new FloorDTO(floorRepository.findByNumber(number)
                 .orElseThrow(() -> new EntityNotFoundException("Этаж не найден")));
 
         List<RoomDTO> rooms = roomRepository.findByFloorId(floor.getId())
@@ -86,7 +86,7 @@ public class FloorService {
     @Transactional
     public MapDTO updateFloorData(int id, MapDTO mapDTO) {
         Floor floor = floorRepository.findById(id).orElseGet(Floor::new);
-        floor.setFloorNumber(id);
+        floor.setNumber(id);
         floor.setName(mapDTO.getFloor().getName());
         floor.setPoints(mapDTO.getFloor().getPoints());
         floor = floorRepository.save(floor);
@@ -101,7 +101,6 @@ public class FloorService {
             Integer oldId = node.getId();
             node.setId(null);
             node.setFloorId(floor.getId());
-            node.setNodeNumber(oldId);
             Node saved = nodeRepository.save(new Node(node));
             nodeIdMapping.put(oldId, saved.getId());
         }
@@ -110,7 +109,7 @@ public class FloorService {
             NodeDTO node = new NodeDTO(nodeRepository.findById(entry.getValue()).orElseThrow());
 
             int[] oldNeighbors = mapDTO.getNodes().stream()
-                    .filter(n -> Integer.valueOf(entry.getKey()).equals(n.getNodeNumber()))
+                    .filter(n -> Integer.valueOf(entry.getKey()).equals(n.getId()))
                     .findFirst()
                     .map(NodeDTO::getNeighbors)
                     .orElse(null);
@@ -139,6 +138,7 @@ public class FloorService {
         for (StairsDTO stair : mapDTO.getStairs()) {
             stair.setId(null);
             stair.setFloorId(floor.getId());
+            stair.setNodeId(nodeIdMapping.get(stair.getNodeId()));
             stairsRepository.save(new Stairs(stair));
         }
 
@@ -147,7 +147,7 @@ public class FloorService {
 
     @Transactional
     public void deleteFloor(int number) {
-        Floor floor = floorRepository.findByFloorNumber(number)
+        Floor floor = floorRepository.findByNumber(number)
                 .orElseThrow(() -> new EntityNotFoundException("Этаж не найден"));
 
         try {
