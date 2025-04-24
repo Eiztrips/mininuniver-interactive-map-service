@@ -110,7 +110,7 @@ public class FloorService {
             NodeDTO node = new NodeDTO(nodeRepository.findById(entry.getValue()).orElseThrow());
 
             int[] oldNeighbors = mapDTO.getNodes().stream()
-                    .filter(n -> n.getId().equals(entry.getKey()))
+                    .filter(n -> Integer.valueOf(entry.getKey()).equals(n.getNodeNumber()))
                     .findFirst()
                     .map(NodeDTO::getNeighbors)
                     .orElse(null);
