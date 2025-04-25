@@ -34,10 +34,7 @@ import org.mininuniver.interactiveMap.repositories.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -96,6 +93,7 @@ public class FloorService {
         stairsRepository.deleteAllByFloorId(floor.getId());
 
         Map<Integer, Integer> nodeIdMapping = new HashMap<>();
+        Map<Integer, Integer> neighborsIdMapping = new HashMap<>();
 
         for (NodeDTO node : mapDTO.getNodes()) {
             Integer oldId = node.getId();
@@ -108,15 +106,11 @@ public class FloorService {
         for (Map.Entry<Integer, Integer> entry : nodeIdMapping.entrySet()) {
             NodeDTO node = new NodeDTO(nodeRepository.findById(entry.getValue()).orElseThrow());
 
-            int[] oldNeighbors = mapDTO.getNodes().stream()
-                    .filter(n -> Integer.valueOf(entry.getKey()).equals(n.getId()))
-                    .findFirst()
-                    .map(NodeDTO::getNeighbors)
-                    .orElse(null);
+            int[] oldNeighbors = node.getNeighbors();
 
             if (oldNeighbors != null) {
                 int[] newNeighbors = Arrays.stream(oldNeighbors)
-                        .map(n -> nodeIdMapping.getOrDefault(n, n))
+                        .map(n -> nodeIdMapping.getOrDefault(nodeIdMapping.get(n), nodeIdMapping.get(n)))
                         .toArray();
                 node.setNeighbors(newNeighbors);
                 nodeRepository.save(new Node(node));
