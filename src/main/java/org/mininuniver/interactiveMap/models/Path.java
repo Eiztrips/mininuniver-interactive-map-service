@@ -20,6 +20,7 @@
 package org.mininuniver.interactiveMap.models;
 
 import io.hypersistence.utils.hibernate.type.array.IntArrayType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Table(name = "Paths")
+@Schema(name = "PathEntity", description = "Модель пути (entity)")
 public class Path {
 
     @Id

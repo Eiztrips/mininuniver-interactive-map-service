@@ -20,6 +20,7 @@
 package org.mininuniver.interactiveMap.models;
 
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Table(name = "Rooms")
+@Schema(name = "RoomEntity", description = "Модель комнаты (entity)")
 public class Room {
 
     @Id

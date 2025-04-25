@@ -21,6 +21,7 @@ package org.mininuniver.interactiveMap.models;
 
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import io.hypersistence.utils.hibernate.type.array.IntArrayType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +37,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Table(name = "Stairs")
+@Schema(name = "StairsEntity", description = "Модель лестницы (entity)")
 public class Stairs {
 
     @Id
