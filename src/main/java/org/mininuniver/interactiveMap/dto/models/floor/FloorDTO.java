@@ -31,7 +31,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class FloorDTO {
-    private Integer id;
+    private Long id;
     private Integer number;
     private String name;
     private List<PointDTO> points;

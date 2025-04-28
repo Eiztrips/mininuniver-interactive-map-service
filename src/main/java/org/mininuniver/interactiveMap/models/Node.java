@@ -19,6 +19,7 @@
 
 package org.mininuniver.interactiveMap.models;
 
+import io.hypersistence.utils.hibernate.type.array.LongArrayType;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import io.hypersistence.utils.hibernate.type.array.IntArrayType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,7 +42,7 @@ public class Node {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "floor_id")
@@ -51,9 +52,9 @@ public class Node {
     @Type(JsonBinaryType.class)
     private Map<String, Object> pos;
 
-    @Column(name = "neighbors", columnDefinition = "integer[]")
-    @Type(IntArrayType.class)
-    private int[] neighbors;
+    @Column(name = "neighbors", columnDefinition = "bigint[]")
+    @Type(LongArrayType.class)
+    private Long[] neighbors;
 
     public Node(NodeDTO node) {
         this.id = node.getId();

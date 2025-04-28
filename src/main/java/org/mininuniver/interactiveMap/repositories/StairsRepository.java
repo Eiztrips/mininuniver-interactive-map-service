@@ -26,8 +26,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StairsRepository extends JpaRepository<Stairs, Integer>{
-    List<Stairs> findByFloorId(Integer floorId);
+public interface StairsRepository extends JpaRepository<Stairs, Long>{
+    List<Stairs> findByFloorId(Long floorId);
 
-    void deleteAllByFloorId(Integer floorId);
+    void deleteAllByFloorId(Long floorId);
 }

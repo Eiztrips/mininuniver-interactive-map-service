@@ -19,6 +19,7 @@
 
 package org.mininuniver.interactiveMap.models;
 
+import io.hypersistence.utils.hibernate.type.array.LongArrayType;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import io.hypersistence.utils.hibernate.type.array.IntArrayType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,8 +43,7 @@ public class Stairs {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "floor_id")
@@ -57,9 +57,9 @@ public class Stairs {
     @Type(JsonBinaryType.class)
     private List<PointDTO> points;
 
-    @Column(name = "floors", columnDefinition = "integer[]")
-    @Type(IntArrayType.class)
-    private int[] floors;
+    @Column(name = "floors", columnDefinition = "bigint[]")
+    @Type(LongArrayType.class)
+    private Long[] floors;
 
     public Stairs(StairsDTO stair) {
         this.id = stair.getId();

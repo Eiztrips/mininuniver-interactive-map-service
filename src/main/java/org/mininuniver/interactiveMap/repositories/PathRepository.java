@@ -28,6 +28,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PathRepository extends JpaRepository<Path, Integer> {
-    List<Path> findByFloorId(Integer floorId);
+public interface PathRepository extends JpaRepository<Path, Long> {
+    List<Path> findByFloorId(Long floorId);
 }

@@ -31,10 +31,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class RoomDTO {
-    private Integer id;
+    private Long id;
     private String name;
-    private Integer floorId;
-    private Integer nodeId;
+    private Long floorId;
+    private Long nodeId;
     private List<PointDTO> points;
 
     public RoomDTO(Room room) {

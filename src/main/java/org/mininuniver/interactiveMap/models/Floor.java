@@ -38,9 +38,9 @@ public class Floor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    private int number;
+    private Integer number;
 
     private String name;
 

@@ -20,6 +20,7 @@
 package org.mininuniver.interactiveMap.models;
 
 import io.hypersistence.utils.hibernate.type.array.IntArrayType;
+import io.hypersistence.utils.hibernate.type.array.LongArrayType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -40,7 +41,7 @@ public class Path {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "floor_id")
@@ -54,9 +55,9 @@ public class Path {
     @JoinColumn(name = "second_room_id")
     private Room secondRoom;
 
-    @Column(name = "nodes", columnDefinition = "integer[]")
-    @Type(IntArrayType.class)
-    private int[] nodesInPath;
+    @Column(name = "nodes", columnDefinition = "bigint[]")
+    @Type(LongArrayType.class)
+    private Long[] nodesInPath;
 
     public Path(PathDTO path) {
         if (path.getFloorId() != null) {

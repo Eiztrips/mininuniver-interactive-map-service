@@ -30,10 +30,10 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 public class NodeDTO {
-    private Integer id;
-    private Integer floorId;
+    private Long id;
+    private Long floorId;
     private Map<String, Object> pos;
-    private int[] neighbors;
+    private Long[] neighbors;
 
     public NodeDTO(Node node) {
         this.id = node.getId();

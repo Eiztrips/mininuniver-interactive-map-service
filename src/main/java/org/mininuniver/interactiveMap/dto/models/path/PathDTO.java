@@ -28,11 +28,11 @@ import org.mininuniver.interactiveMap.models.Path;
 @Setter
 @NoArgsConstructor
 public class PathDTO {
-    private Integer id;
-    private Integer floorId;
-    private Integer firstRoomId;
-    private Integer secondRoomId;
-    private int[] nodesInPath;
+    private Long id;
+    private Long floorId;
+    private Long firstRoomId;
+    private Long secondRoomId;
+    private Long[] nodesInPath;
 
     public PathDTO(Path path) {
         this.id = path.getId();

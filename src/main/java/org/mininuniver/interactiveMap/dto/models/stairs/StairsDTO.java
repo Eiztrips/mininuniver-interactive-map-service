@@ -31,11 +31,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class StairsDTO {
-    private Integer id;
-    private Integer floorId;
-    private Integer nodeId;
+    private Long id;
+    private Long floorId;
+    private Long nodeId;
     private List<PointDTO> points;
-    private int[] floors;
+    private Long[] floors;
 
     public StairsDTO(Stairs stairs) {
         this.id = stairs.getId();

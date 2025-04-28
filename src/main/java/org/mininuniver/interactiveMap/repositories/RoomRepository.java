@@ -27,12 +27,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RoomRepository extends JpaRepository<Room, Integer> {
+public interface RoomRepository extends JpaRepository<Room, Long> {
 
-    List<Room> findByFloorId(Integer floorId);
+    List<Room> findByFloorId(Long floorId);
     List<Room> findAll();
     Optional<Room> findByName(String name);
-    Optional<Room> findById(Integer id);
+    Optional<Room> findById(Long id);
 
-    void deleteAllByFloorId(Integer floorId);
+    void deleteAllByFloorId(Long floorId);
 }

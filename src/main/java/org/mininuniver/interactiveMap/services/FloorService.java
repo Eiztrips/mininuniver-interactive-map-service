@@ -34,6 +34,7 @@ import org.mininuniver.interactiveMap.repositories.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.util.*;
 
 @Service
@@ -49,7 +50,7 @@ public class FloorService {
     public List<FloorShortDTO> getAllFloors() {
         List<Floor> floors = floorRepository.findAll();
         return floors.stream()
-                .map(floor -> new FloorShortDTO(floor.getId(), floor.getNumber(), floor.getName()))
+                .map(FloorShortDTO::new)
                 .toList();
     }
 
@@ -81,9 +82,9 @@ public class FloorService {
     }
 
     @Transactional
-    public MapDTO updateFloorData(int id, MapDTO mapDTO) {
-        Floor floor = floorRepository.findById(id).orElseGet(Floor::new);
-        floor.setNumber(id);
+    public MapDTO updateFloorData(Integer number, MapDTO mapDTO) {
+        Floor floor = floorRepository.findByNumber(number).orElseGet(Floor::new);
+        floor.setNumber(number);
         floor.setName(mapDTO.getFloor().getName());
         floor.setPoints(mapDTO.getFloor().getPoints());
         floor = floorRepository.save(floor);
@@ -92,24 +93,23 @@ public class FloorService {
         nodeRepository.deleteAllByFloorId(floor.getId());
         stairsRepository.deleteAllByFloorId(floor.getId());
 
-        Map<Integer, Integer> nodeIdMapping = new HashMap<>();
-        Map<Integer, Integer> neighborsIdMapping = new HashMap<>();
+        Map<Long, Long> nodeIdMapping = new HashMap<>();
 
         for (NodeDTO node : mapDTO.getNodes()) {
-            Integer oldId = node.getId();
+            Long oldId = node.getId();
             node.setId(null);
             node.setFloorId(floor.getId());
             Node saved = nodeRepository.save(new Node(node));
             nodeIdMapping.put(oldId, saved.getId());
         }
 
-        for (Map.Entry<Integer, Integer> entry : nodeIdMapping.entrySet()) {
+        for (Map.Entry<Long, Long> entry : nodeIdMapping.entrySet()) {
             NodeDTO node = new NodeDTO(nodeRepository.findById(entry.getValue()).orElseThrow());
 
-            int[] oldNeighbors = node.getNeighbors();
+            Long[] oldNeighbors = node.getNeighbors();
 
             if (oldNeighbors != null) {
-                int[] newNeighbors = Arrays.stream(oldNeighbors)
+                Long[] newNeighbors = (Long[]) Arrays.stream(oldNeighbors)
                         .map(n -> nodeIdMapping.getOrDefault(nodeIdMapping.get(n), nodeIdMapping.get(n)))
                         .toArray();
                 node.setNeighbors(newNeighbors);
@@ -121,7 +121,7 @@ public class FloorService {
             room.setId(null);
             room.setFloorId(floor.getId());
             if (room.getNodeId() != null) {
-                Integer oldNodeId = room.getNodeId();
+                Long oldNodeId = room.getNodeId();
                 if (nodeIdMapping.containsKey(oldNodeId)) {
                     room.setNodeId(nodeIdMapping.get(oldNodeId));
                 }
@@ -130,7 +130,6 @@ public class FloorService {
         }
 
         for (StairsDTO stair : mapDTO.getStairs()) {
-            stair.setId(null);
             stair.setFloorId(floor.getId());
             stair.setNodeId(nodeIdMapping.get(stair.getNodeId()));
             stairsRepository.save(new Stairs(stair));

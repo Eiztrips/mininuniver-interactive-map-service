@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface FloorRepository extends JpaRepository<Floor, Integer> {
+public interface FloorRepository extends JpaRepository<Floor, Long> {
 
     Optional<Floor> findByNumber(int number);
 

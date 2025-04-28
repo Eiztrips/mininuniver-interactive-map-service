@@ -23,18 +23,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.mininuniver.interactiveMap.models.Floor;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class FloorShortDTO {
-    private Integer id;
+    private Long id;
     private Integer number;
     private String name;
 
-    public FloorShortDTO(Integer id, Integer number, String name) {
-        this.id = id;
-        this.number = number;
-        this.name = name;
+    public FloorShortDTO(Floor floor) {
+        this.id = floor.getId();
+        this.number = floor.getNumber();
+        this.name = floor.getName() ;
     }
 }

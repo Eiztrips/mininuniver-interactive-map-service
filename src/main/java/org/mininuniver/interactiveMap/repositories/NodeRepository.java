@@ -26,9 +26,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface NodeRepository extends JpaRepository<Node, Integer>{
-    List<Node> findByFloorId(Integer floorId);
+public interface NodeRepository extends JpaRepository<Node, Long>{
+    List<Node> findByFloorId(Long floorId);
     List<Node> findAll();
 
-    void deleteAllByFloorId(Integer floorId);
+    void deleteAllByFloorId(Long floorId);
 }
