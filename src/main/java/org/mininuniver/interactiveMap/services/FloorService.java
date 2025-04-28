@@ -109,9 +109,9 @@ public class FloorService {
             Long[] oldNeighbors = node.getNeighbors();
 
             if (oldNeighbors != null) {
-                Long[] newNeighbors = (Long[]) Arrays.stream(oldNeighbors)
-                        .map(n -> nodeIdMapping.getOrDefault(nodeIdMapping.get(n), nodeIdMapping.get(n)))
-                        .toArray();
+                Long[] newNeighbors = Arrays.stream(oldNeighbors)
+                        .map(n -> nodeIdMapping.getOrDefault(n, n))
+                        .toArray(Long[]::new);
                 node.setNeighbors(newNeighbors);
                 nodeRepository.save(new Node(node));
             }
@@ -131,6 +131,7 @@ public class FloorService {
 
         for (StairsDTO stair : mapDTO.getStairs()) {
             stair.setFloorId(floor.getId());
+            stair.setId(null);
             stair.setNodeId(nodeIdMapping.get(stair.getNodeId()));
             stairsRepository.save(new Stairs(stair));
         }
