@@ -29,10 +29,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 public class JwtFilter extends OncePerRequestFilter implements Ordered {
 
@@ -49,30 +49,56 @@ public class JwtFilter extends OncePerRequestFilter implements Ordered {
             throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            final String jwt = authHeader.substring(7);
-            String username = null;
-            try {
-                username = jwtUtil.extractUsername(jwt);
-            } catch (io.jsonwebtoken.ExpiredJwtException e) {
-                logger.warn("JWT expired", e);
-                response.setHeader("X-JWT-Error", "Token expired");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        final String jwt = authHeader.substring(7);
+        String username = null;
+
+        try {
+            username = jwtUtil.extractUsername(jwt);
+
+            if (jwtUtil.isRefreshToken(jwt)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            } catch (io.jsonwebtoken.JwtException e) {
-                logger.error("Invalid JWT", e);
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setHeader("X-JWT-Error", "Refresh token cannot be used for authorization");
                 return;
             }
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                if (jwtUtil.validateToken(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
+            if (jwtUtil.isTokenBlacklisted(jwt)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setHeader("X-JWT-Error", "Token has been revoked");
+                return;
+            }
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            logger.debug("JWT expired", e);
+            response.setHeader("X-JWT-Error", "Token expired");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        } catch (io.jsonwebtoken.MalformedJwtException e) {
+            logger.debug("Malformed JWT", e);
+            response.setHeader("X-JWT-Error", "Malformed token");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        } catch (io.jsonwebtoken.security.SignatureException e) {
+            logger.debug("Invalid JWT signature", e);
+            response.setHeader("X-JWT-Error", "Invalid signature");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        } catch (io.jsonwebtoken.JwtException e) {
+            logger.debug("Invalid JWT", e);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            if (jwtUtil.validateToken(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 

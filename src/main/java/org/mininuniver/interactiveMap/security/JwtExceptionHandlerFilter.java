@@ -27,9 +27,15 @@ import org.mininuniver.interactiveMap.core.exeption.ApiError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 
@@ -42,19 +48,33 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
-        } catch (AuthenticationServiceException e) {
-            ApiError apiError = ApiError.builder()
-                    .timestamp(LocalDateTime.now())
-                    .status(HttpStatus.UNAUTHORIZED.value())
-                    .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                    .message(e.getMessage())
-                    .path(request.getRequestURI())
-                    .build();
-
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            objectMapper.findAndRegisterModules();
-            response.getWriter().write(objectMapper.writeValueAsString(apiError));
+        } catch (ExpiredJwtException e) {
+            handleJwtException(response, e, HttpStatus.UNAUTHORIZED, "JWT token has expired");
+        } catch (UnsupportedJwtException e) {
+            handleJwtException(response, e, HttpStatus.UNAUTHORIZED, "JWT token is unsupported");
+        } catch (MalformedJwtException e) {
+            handleJwtException(response, e, HttpStatus.UNAUTHORIZED, "JWT token is malformed");
+        } catch (SignatureException e) {
+            handleJwtException(response, e, HttpStatus.UNAUTHORIZED, "JWT signature validation failed");
+        } catch (AuthenticationException e) {
+            handleJwtException(response, e, HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (RuntimeException e) {
+            handleJwtException(response, e, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error during authentication");
         }
+    }
+    
+    private void handleJwtException(HttpServletResponse response, Exception e, HttpStatus status, String message) throws IOException {
+        ApiError apiError = ApiError.builder()
+                .timestamp(LocalDateTime.now())
+                .status(status.value())
+                .error(status.getReasonPhrase())
+                .message(message)
+                .path(null) // Не имеем доступа к текущему URI здесь
+                .build();
+
+        response.setStatus(status.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        objectMapper.findAndRegisterModules();
+        response.getWriter().write(objectMapper.writeValueAsString(apiError));
     }
 }

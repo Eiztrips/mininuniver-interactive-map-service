@@ -24,14 +24,15 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -41,18 +42,35 @@ public class JwtUtil {
 
     @Value("${jwt.expiration:86400000}")
     private long expiration;
+    
+    @Value("${jwt.refresh-expiration:604800000}")
+    private long refreshExpiration; // по умолчанию 7 дней
+
+    // Хранилище отозванных токенов с временем их истечения
+    private final Map<String, Date> blacklistedTokens = new ConcurrentHashMap<>();
 
     private Key getSigningKey() {
         byte[] keyBytes = secret.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String username) {
+    public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username);
+        // Добавляем роли пользователя в токен
+        claims.put("roles", userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
+                
+        return createToken(claims, userDetails.getUsername(), expiration);
+    }
+    
+    public String generateRefreshToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "refresh");
+        return createToken(claims, userDetails.getUsername(), refreshExpiration);
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map<String, Object> claims, String subject, long expiration) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
@@ -63,12 +81,26 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
+        if (isTokenBlacklisted(token)) {
+            return false;
+        }
+        
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
-
+    
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+    
+    public List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("roles", List.class);
+    }
+    
+    public boolean isRefreshToken(String token) {
+        Claims claims = extractAllClaims(token);
+        return "refresh".equals(claims.get("type"));
     }
 
     private Date extractExpiration(String token) {
@@ -90,5 +122,24 @@ public class JwtUtil {
 
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
+    }
+    
+    // Методы для работы с черным списком токенов
+    public void blacklistToken(String token) {
+        Date expiration = extractExpiration(token);
+        blacklistedTokens.put(token, expiration);
+        
+        // Очистка истекших токенов из blacklist каждый раз при добавлении нового
+        // для предотвращения утечки памяти
+        cleanupBlacklistedTokens();
+    }
+    
+    public boolean isTokenBlacklisted(String token) {
+        return blacklistedTokens.containsKey(token);
+    }
+    
+    private void cleanupBlacklistedTokens() {
+        Date now = new Date();
+        blacklistedTokens.entrySet().removeIf(entry -> entry.getValue().before(now));
     }
 }
