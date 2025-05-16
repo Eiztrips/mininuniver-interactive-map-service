@@ -55,6 +55,7 @@ public class FloorServiceImpl implements FloorService {
     public List<FloorShortDTO> getAllFloors() {
         List<Floor> floors = floorRepository.findAll();
         return floors.stream()
+                .sorted(Comparator.comparing(Floor::getNumber))
                 .map(floorMapper::toShortDto)
                 .toList();
     }
