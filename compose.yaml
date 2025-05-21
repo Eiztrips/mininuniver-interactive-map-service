@@ -5,8 +5,6 @@ services:
       - 'POSTGRES_DB=${PG_DB}'
       - 'POSTGRES_PASSWORD=${PG_PASSWORD}'
       - 'POSTGRES_USER=${PG_USER}'
-    ports:
-      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -14,6 +12,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - mapnet
 
   app:
     build:
@@ -33,6 +33,10 @@ services:
       - 'JWT_SECRET=${JWT_SECRET}'
       - 'JWT_EXPIRATION=${JWT_EXPIRE}'
       - 'APP_MODE=${MODE}'
-
+    networks:
+      - mapnet
 volumes:
   postgres_data:
+
+mapnet:
+    driver: bridge
