@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -96,54 +97,117 @@ public class FloorServiceImpl implements FloorService {
         floor.setPoints(mapDTO.getFloor().getPoints());
         floor = floorRepository.save(floor);
 
-        roomRepository.deleteAllByFloorId(floor.getId());
-        nodeRepository.deleteAllByFloorId(floor.getId());
-        stairsRepository.deleteAllByFloorId(floor.getId());
+        List<Node> existingNodes = nodeRepository.findByFloorId(floor.getId());
+        List<Room> existingRooms = roomRepository.findByFloorId(floor.getId());
+        List<Stairs> existingStairs = stairsRepository.findByFloorId(floor.getId());
+
+        Map<Long, Node> existingNodesMap = existingNodes.stream()
+                .collect(Collectors.toMap(Node::getId, n -> n));
+        Map<Long, Room> existingRoomsMap = existingRooms.stream()
+                .collect(Collectors.toMap(Room::getId, r -> r));
+        Map<Long, Stairs> existingStairsMap = existingStairs.stream()
+                .collect(Collectors.toMap(Stairs::getId, s -> s));
 
         Map<Long, Long> nodeIdMapping = new HashMap<>();
 
-        for (NodeDTO node : mapDTO.getNodes()) {
-            Long oldId = node.getId();
-            node.setId(null);
-            node.setFloorId(floor.getId());
-            Node saved = nodeRepository.save(new Node(node));
-            nodeIdMapping.put(oldId, saved.getId());
+        List<Node> updatedNodes = new ArrayList<>();
+        for (NodeDTO nodeDTO : mapDTO.getNodes()) {
+            Node node;
+            if (nodeDTO.getId() != null && existingNodesMap.containsKey(nodeDTO.getId())) {
+                node = existingNodesMap.get(nodeDTO.getId());
+                node.setPos(nodeDTO.getPos());
+                existingNodesMap.remove(nodeDTO.getId());
+            } else {
+                node = new Node();
+                node.setPos(nodeDTO.getPos());
+                node.setFloor(floor);
+            }
+
+            node = nodeRepository.save(node);
+
+            Long oldId = nodeDTO.getId() != null ? nodeDTO.getId() : -node.getId();
+            nodeIdMapping.put(oldId, node.getId());
+            updatedNodes.add(node);
         }
 
-        for (Map.Entry<Long, Long> entry : nodeIdMapping.entrySet()) {
-            NodeDTO node = new NodeDTO(nodeRepository.findById(entry.getValue()).orElseThrow());
+        for (Node node : existingNodesMap.values()) {
+            nodeRepository.delete(node);
+        }
 
-            Long[] oldNeighbors = node.getNeighbors();
+        for (int i = 0; i < mapDTO.getNodes().size(); i++) {
+            NodeDTO nodeDTO = mapDTO.getNodes().get(i);
+            Node node = updatedNodes.get(i);
 
-            if (oldNeighbors != null) {
-                Long[] newNeighbors = Arrays.stream(oldNeighbors)
+            if (nodeDTO.getNeighbors() != null) {
+                Long[] newNeighbors = Arrays.stream(nodeDTO.getNeighbors())
                         .map(n -> nodeIdMapping.getOrDefault(n, n))
                         .toArray(Long[]::new);
                 node.setNeighbors(newNeighbors);
-                nodeRepository.save(new Node(node));
+                nodeRepository.save(node);
             }
         }
 
-        for (RoomDTO room : mapDTO.getRooms()) {
-            room.setId(null);
-            room.setFloorId(floor.getId());
-            if (room.getNodeId() != null) {
-                Long oldNodeId = room.getNodeId();
-                if (nodeIdMapping.containsKey(oldNodeId)) {
-                    room.setNodeId(nodeIdMapping.get(oldNodeId));
-                }
+        Map<String, Room> roomsByName = existingRooms.stream()
+                .collect(Collectors.toMap(Room::getName, r -> r, (r1, r2) -> r1));
+
+        for (RoomDTO roomDTO : mapDTO.getRooms()) {
+            Room room;
+            if (roomDTO.getId() != null && existingRoomsMap.containsKey(roomDTO.getId())) {
+                room = existingRoomsMap.get(roomDTO.getId());
+                existingRoomsMap.remove(roomDTO.getId());
+            } else if (roomDTO.getName() != null && roomsByName.containsKey(roomDTO.getName())) {
+                room = roomsByName.get(roomDTO.getName());
+                existingRoomsMap.remove(room.getId());
+            } else {
+                room = new Room();
             }
-            roomRepository.save(new Room(room));
+
+            room.setName(roomDTO.getName());
+            room.setFloor(floor);
+            room.setPoints(roomDTO.getPoints());
+
+            if (roomDTO.getNodeId() != null) {
+                Long mappedNodeId = nodeIdMapping.getOrDefault(roomDTO.getNodeId(), roomDTO.getNodeId());
+                Node node = new Node();
+                node.setId(mappedNodeId);
+                room.setNode(node);
+            }
+
+            roomRepository.save(room);
         }
 
-        for (StairsDTO stair : mapDTO.getStairs()) {
-            stair.setFloorId(floor.getId());
-            stair.setId(null);
-            stair.setNodeId(nodeIdMapping.get(stair.getNodeId()));
-            stairsRepository.save(new Stairs(stair));
+        for (Room room : existingRoomsMap.values()) {
+            roomRepository.delete(room);
         }
 
-        return mapDTO;
+        for (StairsDTO stairsDTO : mapDTO.getStairs()) {
+            Stairs stairs;
+            if (stairsDTO.getId() != null && existingStairsMap.containsKey(stairsDTO.getId())) {
+                stairs = existingStairsMap.get(stairsDTO.getId());
+                existingStairsMap.remove(stairsDTO.getId());
+            } else {
+                stairs = new Stairs();
+            }
+
+            stairs.setFloor(floor);
+            stairs.setPoints(stairsDTO.getPoints());
+            stairs.setFloors(stairsDTO.getFloors());
+
+            if (stairsDTO.getNodeId() != null) {
+                Long mappedNodeId = nodeIdMapping.getOrDefault(stairsDTO.getNodeId(), stairsDTO.getNodeId());
+                Node node = new Node();
+                node.setId(mappedNodeId);
+                stairs.setNode(node);
+            }
+
+            stairsRepository.save(stairs);
+        }
+
+        for (Stairs stairs : existingStairsMap.values()) {
+            stairsRepository.delete(stairs);
+        }
+
+        return getMapData(number);
     }
 
     @Transactional

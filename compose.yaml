@@ -38,5 +38,6 @@ services:
 volumes:
   postgres_data:
 
-mapnet:
+networks:
+  mapnet:
     driver: bridge
