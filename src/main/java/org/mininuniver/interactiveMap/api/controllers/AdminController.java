@@ -59,4 +59,20 @@ public class AdminController {
         return floorServiceImpl.updateFloorData(number, mapDTO);
     }
 
+    @PostMapping("/floors/{number}")
+    public MapDTO createFloor(@PathVariable int number, @RequestBody MapDTO mapDTO) {
+        return floorServiceImpl.createFloor(number, mapDTO);
+    }
+
+    @Operation(summary = "Полный сброс базы данных")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "База данных успешно сброшена"),
+            @ApiResponse(responseCode = "500", description = "Ошибка при сбросе базы данных", content = @Content)
+    })
+    @DeleteMapping("/reset-db")
+    public ResponseEntity<Void> resetDatabase() {
+        floorServiceImpl.resetDatabase();
+        return ResponseEntity.noContent().build();
+    }
+
 }

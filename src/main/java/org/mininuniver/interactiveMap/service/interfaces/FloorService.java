@@ -27,6 +27,7 @@ import java.util.List;
 public interface FloorService {
     MapDTO getMapData(int number);
     MapDTO updateFloorData(int number, MapDTO mapDTO);
+    MapDTO createFloor(int number, MapDTO mapDTO);
     List<FloorShortDTO> getAllFloors();
     void deleteFloor(int number);
 }

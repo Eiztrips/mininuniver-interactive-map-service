@@ -211,6 +211,65 @@ public class FloorServiceImpl implements FloorService {
     }
 
     @Transactional
+    public MapDTO createFloor(int number, MapDTO mapDTO) {
+        if (floorRepository.existsByNumber(number)) {
+            throw new IllegalArgumentException("Floor with this number already exists");
+        }
+
+        Floor floor = new Floor();
+        floor.setNumber(number);
+        floor.setName(mapDTO.getFloor().getName());
+        floor.setPoints(mapDTO.getFloor().getPoints());
+        floor = floorRepository.save(floor);
+
+        Map<Long, Long> nodeIdMapping = new HashMap<>();
+
+        for (NodeDTO nodeDTO : mapDTO.getNodes()) {
+            Node node = new Node();
+            node.setPos(nodeDTO.getPos());
+            node.setFloor(floor);
+            node = nodeRepository.save(node);
+
+            Long oldId = nodeDTO.getId() != null ? nodeDTO.getId() : -node.getId();
+            nodeIdMapping.put(oldId, node.getId());
+        }
+
+        for (RoomDTO roomDTO : mapDTO.getRooms()) {
+            Room room = new Room();
+            room.setName(roomDTO.getName());
+            room.setFloor(floor);
+            room.setPoints(roomDTO.getPoints());
+
+            if (roomDTO.getNodeId() != null) {
+                Long mappedNodeId = nodeIdMapping.getOrDefault(roomDTO.getNodeId(), roomDTO.getNodeId());
+                Node node = new Node();
+                node.setId(mappedNodeId);
+                room.setNode(node);
+            }
+
+            roomRepository.save(room);
+        }
+
+        for (StairsDTO stairsDTO : mapDTO.getStairs()) {
+            Stairs stairs = new Stairs();
+            stairs.setFloor(floor);
+            stairs.setPoints(stairsDTO.getPoints());
+            stairs.setFloors(stairsDTO.getFloors());
+
+            if (stairsDTO.getNodeId() != null) {
+                Long mappedNodeId = nodeIdMapping.getOrDefault(stairsDTO.getNodeId(), stairsDTO.getNodeId());
+                Node node = new Node();
+                node.setId(mappedNodeId);
+                stairs.setNode(node);
+            }
+
+            stairsRepository.save(stairs);
+        }
+
+        return getMapData(number);
+    }
+
+    @Transactional
     public void deleteFloor(int number) {
         Floor floor = floorRepository.findByNumber(number)
                 .orElseThrow(() -> new EntityNotFoundException("Этаж не найден"));
@@ -222,6 +281,20 @@ public class FloorServiceImpl implements FloorService {
             floorRepository.delete(floor);
         } catch (OptimisticLockException e) {
             throw new RuntimeException("Ошибка при удалении этажа: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void resetDatabase() {
+        try {
+            roomRepository.deleteAll();
+            stairsRepository.deleteAll();
+            nodeRepository.deleteAll();
+            floorRepository.deleteAll();
+
+            floorRepository.resetSequences();
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка при сбросе базы данных: " + e.getMessage());
         }
     }
 
