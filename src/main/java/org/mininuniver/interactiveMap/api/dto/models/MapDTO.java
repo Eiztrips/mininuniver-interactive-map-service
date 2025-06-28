@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.mininuniver.interactiveMap.api.dto.models.floor.FloorDTO;
 import org.mininuniver.interactiveMap.api.dto.models.node.NodeDTO;
-import org.mininuniver.interactiveMap.api.dto.models.path.PathDTO;
 import org.mininuniver.interactiveMap.api.dto.models.room.RoomDTO;
 import org.mininuniver.interactiveMap.api.dto.models.stairs.StairsDTO;
 
@@ -38,5 +37,4 @@ public class MapDTO {
     private final List<RoomDTO> rooms;
     private final List<StairsDTO> stairs;
     private final List<NodeDTO> nodes;
-    private final List<PathDTO> paths;
 }

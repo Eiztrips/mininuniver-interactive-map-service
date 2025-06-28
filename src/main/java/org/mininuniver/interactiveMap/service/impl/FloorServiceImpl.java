@@ -29,7 +29,6 @@ import org.mininuniver.interactiveMap.core.models.Room;
 import org.mininuniver.interactiveMap.core.models.Stairs;
 import org.mininuniver.interactiveMap.core.repositories.*;
 import org.mininuniver.interactiveMap.api.dto.models.node.NodeDTO;
-import org.mininuniver.interactiveMap.api.dto.models.path.PathDTO;
 import org.mininuniver.interactiveMap.api.dto.models.room.RoomDTO;
 import org.mininuniver.interactiveMap.api.dto.models.stairs.StairsDTO;
 import org.mininuniver.interactiveMap.api.dto.models.floor.FloorShortDTO;
@@ -50,7 +49,6 @@ public class FloorServiceImpl implements FloorService {
     private final RoomRepository roomRepository;
     private final StairsRepository stairsRepository;
     private final NodeRepository nodeRepository;
-    private final PathRepository pathRepository;
     private final FloorMapper floorMapper;
 
     public List<FloorShortDTO> getAllFloors() {
@@ -76,17 +74,12 @@ public class FloorServiceImpl implements FloorService {
                 .map(StairsDTO::new)
                 .toList();
 
-        List<PathDTO> paths = pathRepository.findByFloorId(floor.getId())
-                .stream()
-                .map(PathDTO::new)
-                .toList();
-
         List<NodeDTO> nodes = nodeRepository.findByFloorId(floor.getId())
                 .stream()
                 .map(NodeDTO::new)
                 .toList();
 
-        return new MapDTO(floor, rooms, stairs, nodes, paths);
+        return new MapDTO(floor, rooms, stairs, nodes);
     }
 
     @Transactional

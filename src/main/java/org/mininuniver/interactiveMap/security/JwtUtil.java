@@ -44,9 +44,8 @@ public class JwtUtil {
     private long expiration;
     
     @Value("${jwt.refresh-expiration:604800000}")
-    private long refreshExpiration; // по умолчанию 7 дней
+    private long refreshExpiration;
 
-    // Хранилище отозванных токенов с временем их истечения
     private final Map<String, Date> blacklistedTokens = new ConcurrentHashMap<>();
 
     private Key getSigningKey() {
@@ -56,7 +55,6 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        // Добавляем роли пользователя в токен
         claims.put("roles", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
@@ -123,14 +121,10 @@ public class JwtUtil {
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
-    
-    // Методы для работы с черным списком токенов
+
     public void blacklistToken(String token) {
         Date expiration = extractExpiration(token);
         blacklistedTokens.put(token, expiration);
-        
-        // Очистка истекших токенов из blacklist каждый раз при добавлении нового
-        // для предотвращения утечки памяти
         cleanupBlacklistedTokens();
     }
     

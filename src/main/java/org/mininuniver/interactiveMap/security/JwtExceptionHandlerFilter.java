@@ -69,7 +69,7 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
                 .status(status.value())
                 .error(status.getReasonPhrase())
                 .message(message)
-                .path(null) // Не имеем доступа к текущему URI здесь
+                .path(null)
                 .build();
 
         response.setStatus(status.value());
