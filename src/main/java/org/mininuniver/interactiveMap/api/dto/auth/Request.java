@@ -19,6 +19,7 @@
 
 package org.mininuniver.interactiveMap.api.dto.auth;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Request {
+    @NotNull(message = "Имя пользователя не может быть пустым")
     private String username;
+
+    @NotNull(message = "Пароль не может быть пустым")
     private String password;
 }
 

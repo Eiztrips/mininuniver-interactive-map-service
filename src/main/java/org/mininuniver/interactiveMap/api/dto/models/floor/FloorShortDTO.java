@@ -19,6 +19,7 @@
 
 package org.mininuniver.interactiveMap.api.dto.models.floor;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +30,10 @@ import org.mininuniver.interactiveMap.core.models.Floor;
 @NoArgsConstructor
 public class FloorShortDTO {
     private Long id;
+
+    @NotNull(message = "Номер этажа обязателен")
     private Integer number;
+
+    @NotNull(message = "Имя этажа не может быть пустым")
     private String name;
 }

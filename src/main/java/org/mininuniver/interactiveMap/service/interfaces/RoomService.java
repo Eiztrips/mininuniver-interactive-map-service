@@ -20,9 +20,11 @@
 package org.mininuniver.interactiveMap.service.interfaces;
 
 import org.mininuniver.interactiveMap.api.dto.models.room.RoomDTO;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
+@Validated
 public interface RoomService {
     RoomDTO getRoomByName(String name);
     List<RoomDTO> getAllRooms();

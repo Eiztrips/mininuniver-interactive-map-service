@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mininuniver.interactiveMap.api.dto.auth.Request;
 import org.mininuniver.interactiveMap.api.dto.auth.Response;
@@ -65,7 +66,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "Ошибка сервера", content = @Content)
     })
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> createAuthenticationToken(@RequestBody Request request) {
+    public ResponseEntity<AuthResponse> createAuthenticationToken(@RequestBody @Valid Request request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -90,24 +91,21 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Недействительный refresh токен", content = @Content)
     })
     @PostMapping("/refresh")
-    public ResponseEntity<Response> refreshToken(@RequestBody RefreshTokenRequest refreshRequest) {
+    public ResponseEntity<Response> refreshToken(@RequestBody @Valid RefreshTokenRequest refreshRequest) {
         try {
             String refreshToken = refreshRequest.getRefreshToken();
-            
-            // Проверяем, что токен действительный refresh токен
+
             if (!jwtUtil.isRefreshToken(refreshToken)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Provided token is not a refresh token");
             }
             
             String username = jwtUtil.extractUsername(refreshToken);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            
-            // Проверяем, что refresh токен действителен
+
             if (!jwtUtil.validateToken(refreshToken, userDetails)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh token");
             }
-            
-            // Генерируем новый access токен
+
             String newAccessToken = jwtUtil.generateToken(userDetails);
             
             return ResponseEntity.ok(new Response(newAccessToken));
@@ -125,11 +123,9 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> logout(@RequestHeader("Authorization") String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
-            // Добавляем токен в черный список
             jwtUtil.blacklistToken(jwt);
         }
-        
-        // Очищаем контекст безопасности
+
         SecurityContextHolder.clearContext();
         
         Map<String, String> response = new HashMap<>();

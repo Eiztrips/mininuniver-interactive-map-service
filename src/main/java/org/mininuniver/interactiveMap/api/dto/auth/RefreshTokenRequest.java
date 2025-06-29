@@ -20,6 +20,7 @@
 package org.mininuniver.interactiveMap.api.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,5 +34,6 @@ public class RefreshTokenRequest {
     @Schema(description = "Refresh токен для получения нового токена доступа", 
             example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", 
             required = true)
+    @NotNull(message = "Refresh токен не может быть пустым")
     private String refreshToken;
 }

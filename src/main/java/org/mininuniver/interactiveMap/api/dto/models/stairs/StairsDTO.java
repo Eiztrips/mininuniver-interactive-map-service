@@ -19,6 +19,8 @@
 
 package org.mininuniver.interactiveMap.api.dto.models.stairs;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,8 +34,15 @@ import java.util.List;
 @NoArgsConstructor
 public class StairsDTO {
     private Long id;
+
+    @NotNull(message = "ID этажа обязателен")
     private Long floorId;
+
     private Long nodeId;
+
+    @NotNull(message = "Контур лестницы обязателен")
+    @Size(min = 3, message = "Контур лестницы должен содержать минимум 3 точки")
     private List<PointDTO> points;
+
     private Long[] floors;
 }

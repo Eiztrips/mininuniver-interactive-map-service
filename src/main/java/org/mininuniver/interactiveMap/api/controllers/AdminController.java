@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.mininuniver.interactiveMap.api.dto.models.MapDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,21 @@ public class AdminController {
     @Autowired
     private FloorServiceImpl floorServiceImpl;
 
+    @Operation(summary = "Изменить/добавить данные этажа по номеру")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Этаж успешно изменен/добавлен"),
+            @ApiResponse(responseCode = "404", description = "Этаж не найден", content = @Content)
+    })
+    @PutMapping("/floors/{number}")
+    public MapDTO updateFloorData(@PathVariable int number, @RequestBody @Valid MapDTO mapDTO) {
+        return floorServiceImpl.updateFloorData(number, mapDTO);
+    }
+
+    @PostMapping("/floors/{number}")
+    public MapDTO createFloor(@PathVariable int number, @RequestBody @Valid MapDTO mapDTO) {
+        return floorServiceImpl.createFloor(number, mapDTO);
+    }
+
     @Operation(summary = "Удалить этаж по номеру")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Этаж успешно удален"),
@@ -47,21 +63,6 @@ public class AdminController {
     public ResponseEntity<Void> deleteFloor(@PathVariable int number) {
         floorServiceImpl.deleteFloor(number);
         return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "Изменить/добавить данные этажа по номеру")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Этаж успешно изменен/добавлен"),
-            @ApiResponse(responseCode = "404", description = "Этаж не найден", content = @Content)
-    })
-    @PutMapping("/floors/{number}")
-    public MapDTO updateFloorData(@PathVariable int number, @RequestBody MapDTO mapDTO) {
-        return floorServiceImpl.updateFloorData(number, mapDTO);
-    }
-
-    @PostMapping("/floors/{number}")
-    public MapDTO createFloor(@PathVariable int number, @RequestBody MapDTO mapDTO) {
-        return floorServiceImpl.createFloor(number, mapDTO);
     }
 
     @Operation(summary = "Полный сброс базы данных")

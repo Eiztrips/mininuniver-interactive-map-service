@@ -19,6 +19,7 @@
 
 package org.mininuniver.interactiveMap.api.dto.models.node;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +32,12 @@ import java.util.Map;
 @NoArgsConstructor
 public class NodeDTO {
     private Long id;
+
+    @NotNull(message = "ID этажа обязателен")
     private Long floorId;
+
+    @NotNull(message = "Позиция узла не может быть пустой")
     private Map<String, Object> pos;
+
     private Long[] neighbors;
 }

@@ -22,9 +22,10 @@ package org.mininuniver.interactiveMap.api.dto.models.room;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.mininuniver.interactiveMap.core.models.Room;
 import org.mininuniver.interactiveMap.api.dto.models.submodels.PointDTO;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -32,8 +33,16 @@ import java.util.List;
 @NoArgsConstructor
 public class RoomDTO {
     private Long id;
+
+    @NotBlank(message = "Имя комнаты не может быть пустым")
     private String name;
+
+    @NotNull(message = "ID этажа обязателен")
     private Long floorId;
+
     private Long nodeId;
+
+    @NotNull(message = "Контур комнаты обязателен")
+    @Size(min = 3, message = "Контур комнаты должен содержать минимум 3 точки")
     private List<PointDTO> points;
 }

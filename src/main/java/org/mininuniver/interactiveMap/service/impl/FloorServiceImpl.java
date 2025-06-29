@@ -21,6 +21,7 @@ package org.mininuniver.interactiveMap.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mininuniver.interactiveMap.api.dto.models.MapDTO;
 import org.mininuniver.interactiveMap.core.models.Floor;
@@ -40,12 +41,14 @@ import org.mininuniver.interactiveMap.mapper.StairsMapper;
 import org.mininuniver.interactiveMap.service.interfaces.FloorService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class FloorServiceImpl implements FloorService {
 
     private final FloorMapper floorMapper;
@@ -90,7 +93,7 @@ public class FloorServiceImpl implements FloorService {
     }
 
     @Transactional
-    public MapDTO updateFloorData(int number, MapDTO mapDTO) {
+    public MapDTO updateFloorData(int number, @Valid MapDTO mapDTO) {
         Floor floor = floorRepository.findByNumber(number).orElseGet(Floor::new);
         floor.setNumber(number);
         floor.setName(mapDTO.getFloor().getName());
@@ -211,7 +214,7 @@ public class FloorServiceImpl implements FloorService {
     }
 
     @Transactional
-    public MapDTO createFloor(int number, MapDTO mapDTO) {
+    public MapDTO createFloor(int number, @Valid MapDTO mapDTO) {
         if (floorRepository.existsByNumber(number)) {
             throw new IllegalArgumentException("Floor with this number already exists");
         }
