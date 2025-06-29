@@ -36,12 +36,4 @@ public class StairsDTO {
     private Long nodeId;
     private List<PointDTO> points;
     private Long[] floors;
-
-    public StairsDTO(Stairs stairs) {
-        this.id = stairs.getId();
-        this.floorId = stairs.getFloor() != null ? stairs.getFloor().getId() : null;
-        this.nodeId = stairs.getNode() != null ? stairs.getNode().getId() : null;
-        this.points = stairs.getPoints();
-        this.floors = stairs.getFloors();
-    }
 }

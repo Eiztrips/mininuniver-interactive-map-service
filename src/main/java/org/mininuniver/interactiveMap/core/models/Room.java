@@ -57,20 +57,4 @@ public class Room {
     @Type(JsonBinaryType.class)
     private List<PointDTO> points;
 
-    public Room(RoomDTO room) {
-        this.name = room.getName();
-        if (room.getFloorId() != null) {
-            this.floor = new Floor();
-            this.floor.setId(room.getFloorId());
-        } else {
-            this.floor = null;
-        }
-        if (room.getNodeId() != null) {
-            this.node = new Node();
-            this.node.setId(room.getNodeId());
-        } else {
-            this.node = null;
-        }
-        this.points = room.getPoints();
-    }
 }

@@ -55,13 +55,4 @@ public class Node {
     @Type(LongArrayType.class)
     private Long[] neighbors;
 
-    public Node(NodeDTO node) {
-        this.id = node.getId();
-        if (node.getFloorId() != null) {
-            this.floor = new Floor();
-            this.floor.setId(node.getFloorId());
-        }
-        this.pos = node.getPos();
-        this.neighbors = node.getNeighbors();
-    }
 }

@@ -29,9 +29,4 @@ import lombok.Setter;
 public class PointDTO {
     private int x;
     private int y;
-
-    public PointDTO(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
 }

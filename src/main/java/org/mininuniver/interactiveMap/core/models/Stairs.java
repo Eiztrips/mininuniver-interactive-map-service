@@ -60,17 +60,4 @@ public class Stairs {
     @Type(LongArrayType.class)
     private Long[] floors;
 
-    public Stairs(StairsDTO stair) {
-        this.id = stair.getId();
-        if (stair.getFloorId() != null) {
-            this.floor = new Floor();
-            this.floor.setId(stair.getFloorId());
-        } else this.floor = null;
-        if (stair.getNodeId() != null) {
-            this.node = new Node();
-            this.node.setId(stair.getNodeId());
-        } else this.node = null;
-        this.points = stair.getPoints();
-        this.floors = stair.getFloors();
-    }
 }

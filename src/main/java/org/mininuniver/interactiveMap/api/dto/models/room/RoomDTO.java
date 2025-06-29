@@ -36,12 +36,4 @@ public class RoomDTO {
     private Long floorId;
     private Long nodeId;
     private List<PointDTO> points;
-
-    public RoomDTO(Room room) {
-        this.id = room.getId();
-        this.name = room.getName();
-        this.floorId = room.getFloor() != null ? room.getFloor().getId() : null;
-        this.nodeId = room.getNode() != null ? room.getNode().getId() : null;
-        this.points = room.getPoints();
-    }
 }

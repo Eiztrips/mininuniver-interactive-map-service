@@ -22,6 +22,7 @@ package org.mininuniver.interactiveMap.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.mininuniver.interactiveMap.api.dto.models.room.RoomDTO;
 import org.mininuniver.interactiveMap.core.repositories.RoomRepository;
+import org.mininuniver.interactiveMap.mapper.RoomMapper;
 import org.mininuniver.interactiveMap.service.interfaces.RoomService;
 import org.springframework.stereotype.Service;
 
@@ -31,17 +32,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
 
+    private final RoomMapper roomMapper;
     private final RoomRepository roomRepository;
 
     public RoomDTO getRoomByName(String name) {
-        return new RoomDTO(roomRepository.findByName(name)
+        return roomMapper.toDto(roomRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException(String.format("Помещение %s не найдено", name))));
     }
 
     public List<RoomDTO> getAllRooms() {
-        return roomRepository.findAll()
-                .stream()
-                .map(RoomDTO::new)
-                .toList();
+        return roomMapper.toDtoList(roomRepository.findAll());
     }
 }

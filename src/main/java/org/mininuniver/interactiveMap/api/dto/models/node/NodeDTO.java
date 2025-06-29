@@ -34,11 +34,4 @@ public class NodeDTO {
     private Long floorId;
     private Map<String, Object> pos;
     private Long[] neighbors;
-
-    public NodeDTO(Node node) {
-        this.id = node.getId();
-        this.floorId = node.getFloor() != null ? node.getFloor().getId() : null;
-        this.pos = node.getPos();
-        this.neighbors = node.getNeighbors();
-    }
 }

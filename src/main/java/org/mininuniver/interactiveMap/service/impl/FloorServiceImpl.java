@@ -34,6 +34,9 @@ import org.mininuniver.interactiveMap.api.dto.models.stairs.StairsDTO;
 import org.mininuniver.interactiveMap.api.dto.models.floor.FloorShortDTO;
 import org.mininuniver.interactiveMap.api.dto.models.floor.FloorDTO;
 import org.mininuniver.interactiveMap.mapper.FloorMapper;
+import org.mininuniver.interactiveMap.mapper.NodeMapper;
+import org.mininuniver.interactiveMap.mapper.RoomMapper;
+import org.mininuniver.interactiveMap.mapper.StairsMapper;
 import org.mininuniver.interactiveMap.service.interfaces.FloorService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,11 +48,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FloorServiceImpl implements FloorService {
 
+    private final FloorMapper floorMapper;
+    private final RoomMapper roomMapper;
+    private final StairsMapper stairsMapper;
+    private final NodeMapper nodeMapper;
+
     private final FloorRepository floorRepository;
     private final RoomRepository roomRepository;
     private final StairsRepository stairsRepository;
     private final NodeRepository nodeRepository;
-    private final FloorMapper floorMapper;
 
     public List<FloorShortDTO> getAllFloors() {
         List<Floor> floors = floorRepository.findAll();
@@ -66,17 +73,17 @@ public class FloorServiceImpl implements FloorService {
 
         List<RoomDTO> rooms = roomRepository.findByFloorId(floor.getId())
                 .stream()
-                .map(RoomDTO::new)
+                .map(roomMapper::toDto)
                 .toList();
 
         List<StairsDTO> stairs = stairsRepository.findByFloorId(floor.getId())
                 .stream()
-                .map(StairsDTO::new)
+                .map(stairsMapper::toDto)
                 .toList();
 
         List<NodeDTO> nodes = nodeRepository.findByFloorId(floor.getId())
                 .stream()
-                .map(NodeDTO::new)
+                .map(nodeMapper::toDto)
                 .toList();
 
         return new MapDTO(floor, rooms, stairs, nodes);
