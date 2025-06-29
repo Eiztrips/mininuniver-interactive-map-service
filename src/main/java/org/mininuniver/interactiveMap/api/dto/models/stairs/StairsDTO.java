@@ -24,7 +24,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.mininuniver.interactiveMap.core.models.Stairs;
 import org.mininuniver.interactiveMap.api.dto.models.submodels.PointDTO;
 
 import java.util.List;
