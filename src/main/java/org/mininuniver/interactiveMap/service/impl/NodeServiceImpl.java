@@ -20,9 +20,9 @@
 package org.mininuniver.interactiveMap.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.mininuniver.interactiveMap.core.repositories.NodeRepository;
-import org.mininuniver.interactiveMap.api.dto.models.node.NodeDTO;
-import org.mininuniver.interactiveMap.service.interfaces.NodeService;
+import org.mininuniver.interactiveMap.core.domain.repository.NodeRepository;
+import org.mininuniver.interactiveMap.api.dto.map.node.NodeDTO;
+import org.mininuniver.interactiveMap.service.ports.NodeService;
 import org.mininuniver.interactiveMap.mapper.NodeMapper;
 import org.springframework.stereotype.Service;
 

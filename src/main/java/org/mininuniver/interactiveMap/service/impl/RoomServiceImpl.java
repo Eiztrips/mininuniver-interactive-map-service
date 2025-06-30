@@ -21,10 +21,10 @@ package org.mininuniver.interactiveMap.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.mininuniver.interactiveMap.api.dto.models.room.RoomDTO;
-import org.mininuniver.interactiveMap.core.repositories.RoomRepository;
+import org.mininuniver.interactiveMap.api.dto.map.room.RoomDTO;
+import org.mininuniver.interactiveMap.core.domain.repository.RoomRepository;
 import org.mininuniver.interactiveMap.mapper.RoomMapper;
-import org.mininuniver.interactiveMap.service.interfaces.RoomService;
+import org.mininuniver.interactiveMap.service.ports.RoomService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

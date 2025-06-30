@@ -27,15 +27,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.mininuniver.interactiveMap.api.dto.models.MapDTO;
-import org.mininuniver.interactiveMap.api.dto.models.floor.FloorShortDTO;
-import org.mininuniver.interactiveMap.api.dto.models.node.NodeDTO;
-import org.mininuniver.interactiveMap.api.dto.models.room.RoomDTO;
-import org.mininuniver.interactiveMap.core.models.Node;
-import org.mininuniver.interactiveMap.core.models.Room; // оптимизировать импорты
-import org.mininuniver.interactiveMap.service.interfaces.FloorService;
-import org.mininuniver.interactiveMap.service.interfaces.NodeService;
-import org.mininuniver.interactiveMap.service.interfaces.RoomService;
+import org.mininuniver.interactiveMap.api.dto.map.MapDTO;
+import org.mininuniver.interactiveMap.api.dto.map.floor.FloorShortDTO;
+import org.mininuniver.interactiveMap.api.dto.map.node.NodeDTO;
+import org.mininuniver.interactiveMap.api.dto.map.room.RoomDTO;
+import org.mininuniver.interactiveMap.core.domain.model.Node;
+import org.mininuniver.interactiveMap.core.domain.model.Room; // оптимизировать импорты
+import org.mininuniver.interactiveMap.service.ports.FloorService;
+import org.mininuniver.interactiveMap.service.ports.NodeService;
+import org.mininuniver.interactiveMap.service.ports.RoomService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

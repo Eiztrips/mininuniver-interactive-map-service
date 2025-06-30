@@ -17,23 +17,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.api.dto.models.floor;
+package org.mininuniver.interactiveMap.core.domain.repository;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.mininuniver.interactiveMap.core.models.Floor;
+import org.mininuniver.interactiveMap.core.domain.model.Node;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@Getter
-@Setter
-@NoArgsConstructor
-public class FloorShortDTO {
-    private Long id;
+import java.util.List;
 
-    @NotNull(message = "Номер этажа обязателен")
-    private Integer number;
+@Repository
+public interface NodeRepository extends JpaRepository<Node, Long>{
+    List<Node> findByFloorId(Long floorId);
+    List<Node> findAll();
 
-    @NotNull(message = "Имя этажа не может быть пустым")
-    private String name;
+    void deleteAllByFloorId(Long floorId);
 }

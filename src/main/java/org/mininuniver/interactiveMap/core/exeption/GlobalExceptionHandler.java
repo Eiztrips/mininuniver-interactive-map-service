@@ -17,14 +17,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.api.response.advice;
+package org.mininuniver.interactiveMap.core.exeption;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.mininuniver.interactiveMap.core.exeption.ApiError;
-import org.mininuniver.interactiveMap.core.exeption.BusinessLogicException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;

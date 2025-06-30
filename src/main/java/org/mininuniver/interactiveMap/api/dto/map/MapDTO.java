@@ -17,22 +17,24 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.core.repositories;
+package org.mininuniver.interactiveMap.api.dto.map;
 
-import org.mininuniver.interactiveMap.core.models.Room;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.mininuniver.interactiveMap.api.dto.map.floor.FloorDTO;
+import org.mininuniver.interactiveMap.api.dto.map.node.NodeDTO;
+import org.mininuniver.interactiveMap.api.dto.map.room.RoomDTO;
+import org.mininuniver.interactiveMap.api.dto.map.stairs.StairsDTO;
 
 import java.util.List;
-import java.util.Optional;
 
-@Repository
-public interface RoomRepository extends JpaRepository<Room, Long> {
-
-    List<Room> findByFloorId(Long floorId);
-    List<Room> findAll();
-    Optional<Room> findByName(String name);
-    Optional<Room> findById(Long id);
-
-    void deleteAllByFloorId(Long floorId);
+@Getter
+@Setter
+@RequiredArgsConstructor
+public class MapDTO {
+    private final FloorDTO floor;
+    private final List<RoomDTO> rooms;
+    private final List<StairsDTO> stairs;
+    private final List<NodeDTO> nodes;
 }

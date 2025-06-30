@@ -17,9 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.core.models;
+package org.mininuniver.interactiveMap.core.domain.model;
 
-import io.hypersistence.utils.hibernate.type.array.LongArrayType;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -27,8 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-import org.mininuniver.interactiveMap.api.dto.models.stairs.StairsDTO;
-import org.mininuniver.interactiveMap.api.dto.models.submodels.PointDTO;
+import org.mininuniver.interactiveMap.api.dto.map.submodels.PointDTO;
 
 import java.util.List;
 
@@ -36,9 +34,9 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "Stairs")
-@Schema(name = "StairsEntity", description = "Модель лестницы (entity)")
-public class Stairs {
+@Table(name = "Rooms")
+@Schema(name = "RoomEntity", description = "Модель комнаты (entity)")
+public class Room {
     @Version
     @Column(name = "version")
     private Long version;
@@ -46,6 +44,8 @@ public class Stairs {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "floor_id")
@@ -58,9 +58,5 @@ public class Stairs {
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)
     private List<PointDTO> points;
-
-    @Column(name = "floors", columnDefinition = "bigint[]")
-    @Type(LongArrayType.class)
-    private Long[] floors;
 
 }

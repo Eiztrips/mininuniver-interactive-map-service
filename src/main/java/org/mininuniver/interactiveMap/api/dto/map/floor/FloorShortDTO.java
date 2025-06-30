@@ -17,15 +17,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.service.interfaces;
+package org.mininuniver.interactiveMap.api.dto.map.floor;
 
-import org.mininuniver.interactiveMap.api.dto.models.room.RoomDTO;
-import org.springframework.validation.annotation.Validated;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.List;
+@Getter
+@Setter
+@NoArgsConstructor
+public class FloorShortDTO {
+    private Long id;
 
-@Validated
-public interface RoomService {
-    RoomDTO getRoomByName(String name);
-    List<RoomDTO> getAllRooms();
+    @NotNull(message = "Номер этажа обязателен")
+    private Integer number;
+
+    @NotNull(message = "Имя этажа не может быть пустым")
+    private String name;
 }

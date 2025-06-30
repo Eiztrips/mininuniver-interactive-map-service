@@ -17,9 +17,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.core.repositories;
+package org.mininuniver.interactiveMap.core.domain.repository;
 
-import org.mininuniver.interactiveMap.core.models.Floor;
+import org.mininuniver.interactiveMap.core.domain.model.Floor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

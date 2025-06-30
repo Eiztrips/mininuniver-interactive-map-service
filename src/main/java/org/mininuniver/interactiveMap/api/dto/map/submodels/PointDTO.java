@@ -17,20 +17,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.service.interfaces;
+package org.mininuniver.interactiveMap.api.dto.map.submodels;
 
-import jakarta.validation.Valid;
-import org.mininuniver.interactiveMap.api.dto.models.MapDTO;
-import org.mininuniver.interactiveMap.api.dto.models.floor.FloorShortDTO;
-import org.springframework.validation.annotation.Validated;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.List;
-
-@Validated
-public interface FloorService {
-    MapDTO getMapData(int number);
-    MapDTO updateFloorData(int number, @Valid MapDTO mapDTO);
-    MapDTO createFloor(int number, @Valid MapDTO mapDTO);
-    List<FloorShortDTO> getAllFloors();
-    void deleteFloor(int number);
+@Getter
+@Setter
+@NoArgsConstructor
+public class PointDTO {
+    private int x;
+    private int y;
 }

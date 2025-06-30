@@ -17,14 +17,31 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.service.interfaces;
+package org.mininuniver.interactiveMap.api.dto.map.stairs;
 
-import org.mininuniver.interactiveMap.api.dto.models.node.NodeDTO;
-import org.springframework.validation.annotation.Validated;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.mininuniver.interactiveMap.api.dto.map.submodels.PointDTO;
 
 import java.util.List;
 
-@Validated
-public interface NodeService {
-    List<NodeDTO> getAllNodes();
+@Getter
+@Setter
+@NoArgsConstructor
+public class StairsDTO {
+    private Long id;
+
+    @NotNull(message = "ID этажа обязателен")
+    private Long floorId;
+
+    private Long nodeId;
+
+    @NotNull(message = "Контур лестницы обязателен")
+    @Size(min = 3, message = "Контур лестницы должен содержать минимум 3 точки")
+    private List<PointDTO> points;
+
+    private Long[] floors;
 }

@@ -17,16 +17,15 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.api.dto.models.submodels;
+package org.mininuniver.interactiveMap.service.ports;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.mininuniver.interactiveMap.api.dto.map.room.RoomDTO;
+import org.springframework.validation.annotation.Validated;
 
-@Getter
-@Setter
-@NoArgsConstructor
-public class PointDTO {
-    private int x;
-    private int y;
+import java.util.List;
+
+@Validated
+public interface RoomService {
+    RoomDTO getRoomByName(String name);
+    List<RoomDTO> getAllRooms();
 }

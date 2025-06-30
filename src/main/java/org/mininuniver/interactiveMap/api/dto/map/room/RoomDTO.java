@@ -17,31 +17,32 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.api.dto.models.stairs;
+package org.mininuniver.interactiveMap.api.dto.map.room;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.mininuniver.interactiveMap.api.dto.models.submodels.PointDTO;
-
+import org.mininuniver.interactiveMap.api.dto.map.submodels.PointDTO;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class StairsDTO {
+public class RoomDTO {
     private Long id;
+
+    @NotBlank(message = "Имя комнаты не может быть пустым")
+    private String name;
 
     @NotNull(message = "ID этажа обязателен")
     private Long floorId;
 
     private Long nodeId;
 
-    @NotNull(message = "Контур лестницы обязателен")
-    @Size(min = 3, message = "Контур лестницы должен содержать минимум 3 точки")
+    @NotNull(message = "Контур комнаты обязателен")
+    @Size(min = 3, message = "Контур комнаты должен содержать минимум 3 точки")
     private List<PointDTO> points;
-
-    private Long[] floors;
 }

@@ -17,27 +17,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.api.dto.models.node;
+package org.mininuniver.interactiveMap.service.ports;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.mininuniver.interactiveMap.core.models.Node;
+import org.mininuniver.interactiveMap.api.dto.map.node.NodeDTO;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.Map;
+import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-public class NodeDTO {
-    private Long id;
-
-    @NotNull(message = "ID этажа обязателен")
-    private Long floorId;
-
-    @NotNull(message = "Позиция узла не может быть пустой")
-    private Map<String, Object> pos;
-
-    private Long[] neighbors;
+@Validated
+public interface NodeService {
+    List<NodeDTO> getAllNodes();
 }
