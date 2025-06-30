@@ -38,6 +38,9 @@ import java.util.Map;
 @Table(name = "Nodes")
 @Schema(name = "NodeEntity", description = "Модель узла (entity)")
 public class Node {
+    @Version
+    @Column(name = "version")
+    private Long version;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -19,6 +19,7 @@
 
 package org.mininuniver.interactiveMap.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.mininuniver.interactiveMap.api.dto.models.room.RoomDTO;
 import org.mininuniver.interactiveMap.core.repositories.RoomRepository;
@@ -37,7 +38,7 @@ public class RoomServiceImpl implements RoomService {
 
     public RoomDTO getRoomByName(String name) {
         return roomMapper.toDto(roomRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException(String.format("Помещение %s не найдено", name))));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Помещение %s не найдено", name))));
     }
 
     public List<RoomDTO> getAllRooms() {

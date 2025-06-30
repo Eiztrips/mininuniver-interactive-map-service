@@ -49,6 +49,11 @@ public class AdminController {
         return floorServiceImpl.updateFloorData(number, mapDTO);
     }
 
+    @Operation(summary = "Создать новый этаж по номеру")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Этаж успешно создан"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные для создания этажа", content = @Content)
+    })
     @PostMapping("/floors/{number}")
     public MapDTO createFloor(@PathVariable int number, @RequestBody @Valid MapDTO mapDTO) {
         return floorServiceImpl.createFloor(number, mapDTO);

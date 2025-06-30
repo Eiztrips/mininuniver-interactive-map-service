@@ -35,6 +35,9 @@ import java.util.List;
 @Table(name = "Floors")
 @Schema(name = "FloorEntity", description = "Модель этажа (entity)")
 public class Floor {
+    @Version
+    @Column(name = "version")
+    private Long version;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

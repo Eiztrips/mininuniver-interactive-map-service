@@ -39,6 +39,9 @@ import java.util.List;
 @Table(name = "Stairs")
 @Schema(name = "StairsEntity", description = "Модель лестницы (entity)")
 public class Stairs {
+    @Version
+    @Column(name = "version")
+    private Long version;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

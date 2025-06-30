@@ -24,6 +24,7 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mininuniver.interactiveMap.api.dto.models.MapDTO;
+import org.mininuniver.interactiveMap.core.exeption.BusinessLogicException;
 import org.mininuniver.interactiveMap.core.models.Floor;
 import org.mininuniver.interactiveMap.core.models.Node;
 import org.mininuniver.interactiveMap.core.models.Room;
@@ -39,6 +40,7 @@ import org.mininuniver.interactiveMap.mapper.NodeMapper;
 import org.mininuniver.interactiveMap.mapper.RoomMapper;
 import org.mininuniver.interactiveMap.mapper.StairsMapper;
 import org.mininuniver.interactiveMap.service.interfaces.FloorService;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -94,7 +96,8 @@ public class FloorServiceImpl implements FloorService {
 
     @Transactional
     public MapDTO updateFloorData(int number, @Valid MapDTO mapDTO) {
-        Floor floor = floorRepository.findByNumber(number).orElseGet(Floor::new);
+        Floor floor = floorRepository.findByNumber(number)
+                .orElseThrow(() -> new EntityNotFoundException("Этаж с номером " + number + " не найден"));
         floor.setNumber(number);
         floor.setName(mapDTO.getFloor().getName());
         floor.setPoints(mapDTO.getFloor().getPoints());
@@ -133,9 +136,7 @@ public class FloorServiceImpl implements FloorService {
             updatedNodes.add(node);
         }
 
-        for (Node node : existingNodesMap.values()) {
-            nodeRepository.delete(node);
-        }
+        nodeRepository.deleteAll(existingNodesMap.values());
 
         for (int i = 0; i < mapDTO.getNodes().size(); i++) {
             NodeDTO nodeDTO = mapDTO.getNodes().get(i);
@@ -179,9 +180,7 @@ public class FloorServiceImpl implements FloorService {
             roomRepository.save(room);
         }
 
-        for (Room room : existingRoomsMap.values()) {
-            roomRepository.delete(room);
-        }
+        roomRepository.deleteAll(existingRoomsMap.values());
 
         for (StairsDTO stairsDTO : mapDTO.getStairs()) {
             Stairs stairs;
@@ -206,18 +205,15 @@ public class FloorServiceImpl implements FloorService {
             stairsRepository.save(stairs);
         }
 
-        for (Stairs stairs : existingStairsMap.values()) {
-            stairsRepository.delete(stairs);
-        }
+        stairsRepository.deleteAll(existingStairsMap.values());
 
         return getMapData(number);
     }
 
     @Transactional
     public MapDTO createFloor(int number, @Valid MapDTO mapDTO) {
-        if (floorRepository.existsByNumber(number)) {
-            throw new IllegalArgumentException("Floor with this number already exists");
-        }
+        if (floorRepository.existsByNumber(number))
+            throw new DuplicateKeyException("Этаж с номером " + number + " уже существует");
 
         Floor floor = new Floor();
         floor.setNumber(number);
@@ -275,7 +271,7 @@ public class FloorServiceImpl implements FloorService {
     @Transactional
     public void deleteFloor(int number) {
         Floor floor = floorRepository.findByNumber(number)
-                .orElseThrow(() -> new EntityNotFoundException("Этаж не найден"));
+                .orElseThrow(() -> new EntityNotFoundException("Этаж с номером " + number + " не найден"));
 
         try {
             roomRepository.deleteAllByFloorId(floor.getId());

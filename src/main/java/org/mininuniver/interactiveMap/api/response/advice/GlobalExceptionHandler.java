@@ -20,11 +20,11 @@
 package org.mininuniver.interactiveMap.api.response.advice;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.mininuniver.interactiveMap.core.exeption.ApiError;
 import org.mininuniver.interactiveMap.core.exeption.BusinessLogicException;
-import org.mininuniver.interactiveMap.core.exeption.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -45,19 +45,6 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        log.warn("Ресурс не найден: {}", ex.getMessage());
-        return ApiError.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .error("Ресурс не найден")
-                .message(ex.getMessage())
-                .path(request.getDescription(false).replace("uri=", ""))
-                .build();
-    }
 
     @ExceptionHandler(BusinessLogicException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -188,6 +175,19 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND.value())
                 .error("Сущность не найдена")
                 .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+    }
+
+    @ExceptionHandler(OptimisticLockException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleOptimisticLockException(OptimisticLockException ex, WebRequest request) {
+        log.warn("Конфликт версий данных: {}", ex.getMessage());
+        return ApiError.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("Конфликт версий данных")
+                .message("Данные были изменены другим пользователем. Пожалуйста, обновите страницу и попробуйте снова.")
                 .path(request.getDescription(false).replace("uri=", ""))
                 .build();
     }

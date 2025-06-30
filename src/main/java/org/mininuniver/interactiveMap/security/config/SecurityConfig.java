@@ -22,6 +22,7 @@ package org.mininuniver.interactiveMap.security.config;
 import org.mininuniver.interactiveMap.security.JwtExceptionHandlerFilter;
 import org.mininuniver.interactiveMap.security.JwtFilter;
 import org.mininuniver.interactiveMap.security.JwtUtil;
+import org.mininuniver.interactiveMap.security.LoginRateLimitFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,6 +66,7 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(loginRateLimitFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(jwtFilter(userDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -94,6 +96,11 @@ public class SecurityConfig {
                 .build();
 
         return new InMemoryUserDetailsManager(admin);
+    }
+
+    @Bean
+    public LoginRateLimitFilter loginRateLimitFilter() {
+        return new LoginRateLimitFilter();
     }
 
     @Bean

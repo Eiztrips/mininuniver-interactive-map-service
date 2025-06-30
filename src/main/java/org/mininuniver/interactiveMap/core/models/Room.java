@@ -38,6 +38,9 @@ import java.util.List;
 @Table(name = "Rooms")
 @Schema(name = "RoomEntity", description = "Модель комнаты (entity)")
 public class Room {
+    @Version
+    @Column(name = "version")
+    private Long version;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

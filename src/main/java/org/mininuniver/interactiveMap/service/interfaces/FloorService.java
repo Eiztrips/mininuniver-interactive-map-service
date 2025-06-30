@@ -19,6 +19,7 @@
 
 package org.mininuniver.interactiveMap.service.interfaces;
 
+import jakarta.validation.Valid;
 import org.mininuniver.interactiveMap.api.dto.models.MapDTO;
 import org.mininuniver.interactiveMap.api.dto.models.floor.FloorShortDTO;
 import org.springframework.validation.annotation.Validated;
@@ -28,8 +29,8 @@ import java.util.List;
 @Validated
 public interface FloorService {
     MapDTO getMapData(int number);
-    MapDTO updateFloorData(int number, MapDTO mapDTO);
-    MapDTO createFloor(int number, MapDTO mapDTO);
+    MapDTO updateFloorData(int number, @Valid MapDTO mapDTO);
+    MapDTO createFloor(int number, @Valid MapDTO mapDTO);
     List<FloorShortDTO> getAllFloors();
     void deleteFloor(int number);
 }
