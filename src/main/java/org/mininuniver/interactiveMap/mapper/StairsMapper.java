@@ -29,9 +29,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface StairsMapper {
-
-    StairsMapper INSTANCE = Mappers.getMapper(StairsMapper.class);
-
     @Mapping(source = "floor.id", target = "floorId")
     @Mapping(source = "node.id", target = "nodeId")
     StairsDTO toDto(Stairs entity);

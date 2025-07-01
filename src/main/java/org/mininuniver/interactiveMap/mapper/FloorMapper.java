@@ -28,7 +28,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface FloorMapper {
-
     FloorDTO toDto(Floor entity);
     FloorShortDTO toShortDto(Floor entity);
 

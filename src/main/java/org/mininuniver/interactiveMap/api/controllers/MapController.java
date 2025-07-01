@@ -32,7 +32,7 @@ import org.mininuniver.interactiveMap.api.dto.map.floor.FloorShortDTO;
 import org.mininuniver.interactiveMap.api.dto.map.node.NodeDTO;
 import org.mininuniver.interactiveMap.api.dto.map.room.RoomDTO;
 import org.mininuniver.interactiveMap.core.domain.model.Node;
-import org.mininuniver.interactiveMap.core.domain.model.Room; // оптимизировать импорты
+import org.mininuniver.interactiveMap.core.domain.model.Room;
 import org.mininuniver.interactiveMap.service.ports.FloorService;
 import org.mininuniver.interactiveMap.service.ports.NodeService;
 import org.mininuniver.interactiveMap.service.ports.RoomService;

@@ -29,9 +29,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface RoomMapper {
-
-    RoomMapper INSTANCE = Mappers.getMapper(RoomMapper.class);
-
     @Mapping(source = "floor.id", target = "floorId")
     @Mapping(source = "node.id", target = "nodeId")
     RoomDTO toDto(Room entity);

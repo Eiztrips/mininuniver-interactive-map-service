@@ -29,9 +29,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface NodeMapper {
-
-    NodeMapper INSTANCE = Mappers.getMapper(NodeMapper.class);
-
     @Mapping(source = "floor.id", target = "floorId")
     NodeDTO toDto(Node entity);
 
