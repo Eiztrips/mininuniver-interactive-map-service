@@ -17,15 +17,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.service.ports;
+package org.mininuniver.interactiveMap.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.mininuniver.interactiveMap.api.dto.map.room.RoomDTO;
-import org.springframework.validation.annotation.Validated;
+import org.mininuniver.interactiveMap.domain.repository.RoomRepository;
+import org.mininuniver.interactiveMap.mapper.RoomMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Validated
-public interface RoomService {
-    RoomDTO getRoomByName(String name);
-    List<RoomDTO> getAllRooms();
+@Service
+@RequiredArgsConstructor
+public class RoomService {
+
+    private final RoomMapper roomMapper;
+    private final RoomRepository roomRepository;
+
+    public RoomDTO getRoomByName(String name) {
+        return roomMapper.toDto(roomRepository.findByName(name)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Помещение %s не найдено", name))));
+    }
+
+    public List<RoomDTO> getAllRooms() {
+        return roomMapper.toDtoList(roomRepository.findAll());
+    }
 }

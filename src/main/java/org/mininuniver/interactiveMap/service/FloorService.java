@@ -17,21 +17,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.service.impl;
+package org.mininuniver.interactiveMap.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mininuniver.interactiveMap.api.dto.map.MapDTO;
-import org.mininuniver.interactiveMap.core.domain.model.Floor;
-import org.mininuniver.interactiveMap.core.domain.model.Node;
-import org.mininuniver.interactiveMap.core.domain.model.Room;
-import org.mininuniver.interactiveMap.core.domain.model.Stairs;
-import org.mininuniver.interactiveMap.core.domain.repository.FloorRepository;
-import org.mininuniver.interactiveMap.core.domain.repository.NodeRepository;
-import org.mininuniver.interactiveMap.core.domain.repository.RoomRepository;
-import org.mininuniver.interactiveMap.core.domain.repository.StairsRepository;
+import org.mininuniver.interactiveMap.domain.model.Floor;
+import org.mininuniver.interactiveMap.domain.model.Node;
+import org.mininuniver.interactiveMap.domain.model.Room;
+import org.mininuniver.interactiveMap.domain.model.Stairs;
+import org.mininuniver.interactiveMap.domain.repository.FloorRepository;
+import org.mininuniver.interactiveMap.domain.repository.NodeRepository;
+import org.mininuniver.interactiveMap.domain.repository.RoomRepository;
+import org.mininuniver.interactiveMap.domain.repository.StairsRepository;
 import org.mininuniver.interactiveMap.api.dto.map.node.NodeDTO;
 import org.mininuniver.interactiveMap.api.dto.map.room.RoomDTO;
 import org.mininuniver.interactiveMap.api.dto.map.stairs.StairsDTO;
@@ -41,7 +41,6 @@ import org.mininuniver.interactiveMap.mapper.FloorMapper;
 import org.mininuniver.interactiveMap.mapper.NodeMapper;
 import org.mininuniver.interactiveMap.mapper.RoomMapper;
 import org.mininuniver.interactiveMap.mapper.StairsMapper;
-import org.mininuniver.interactiveMap.service.ports.FloorService;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +52,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Validated
-public class FloorServiceImpl implements FloorService {
+public class FloorService {
 
     private final FloorMapper floorMapper;
     private final RoomMapper roomMapper;
@@ -174,8 +173,8 @@ public class FloorServiceImpl implements FloorService {
 
             if (roomDTO.getNodeId() != null) {
                 Long mappedNodeId = nodeIdMapping.getOrDefault(roomDTO.getNodeId(), roomDTO.getNodeId());
-                Node node = new Node();
-                node.setId(mappedNodeId);
+                Node node = nodeRepository.findById(mappedNodeId)
+                        .orElseThrow(() -> new EntityNotFoundException("Node с id " + mappedNodeId + " не найден"));
                 room.setNode(node);
             }
 

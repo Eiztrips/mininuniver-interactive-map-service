@@ -29,7 +29,7 @@ import org.mininuniver.interactiveMap.api.dto.map.MapDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.mininuniver.interactiveMap.service.impl.FloorServiceImpl;
+import org.mininuniver.interactiveMap.service.FloorService;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -37,7 +37,7 @@ import org.mininuniver.interactiveMap.service.impl.FloorServiceImpl;
 public class AdminController {
 
     @Autowired
-    private FloorServiceImpl floorServiceImpl;
+    private FloorService floorService;
 
     @Operation(summary = "Изменить/добавить данные этажа по номеру")
     @ApiResponses(value = {
@@ -46,7 +46,7 @@ public class AdminController {
     })
     @PutMapping("/floors/{number}")
     public MapDTO updateFloorData(@PathVariable int number, @RequestBody @Valid MapDTO mapDTO) {
-        return floorServiceImpl.updateFloorData(number, mapDTO);
+        return floorService.updateFloorData(number, mapDTO);
     }
 
     @Operation(summary = "Создать новый этаж по номеру")
@@ -56,7 +56,7 @@ public class AdminController {
     })
     @PostMapping("/floors/{number}")
     public MapDTO createFloor(@PathVariable int number, @RequestBody @Valid MapDTO mapDTO) {
-        return floorServiceImpl.createFloor(number, mapDTO);
+        return floorService.createFloor(number, mapDTO);
     }
 
     @Operation(summary = "Удалить этаж по номеру")
@@ -66,7 +66,7 @@ public class AdminController {
     })
     @DeleteMapping("/floors/{number}")
     public ResponseEntity<Void> deleteFloor(@PathVariable int number) {
-        floorServiceImpl.deleteFloor(number);
+        floorService.deleteFloor(number);
         return ResponseEntity.noContent().build();
     }
 
@@ -77,7 +77,7 @@ public class AdminController {
     })
     @DeleteMapping("/reset-db")
     public ResponseEntity<Void> resetDatabase() {
-        floorServiceImpl.resetDatabase();
+        floorService.resetDatabase();
         return ResponseEntity.noContent().build();
     }
 

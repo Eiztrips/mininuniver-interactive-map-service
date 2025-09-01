@@ -22,7 +22,7 @@ package org.mininuniver.interactiveMap.mapper;
 import org.mapstruct.Mapper;
 import org.mininuniver.interactiveMap.api.dto.map.floor.FloorDTO;
 import org.mininuniver.interactiveMap.api.dto.map.floor.FloorShortDTO;
-import org.mininuniver.interactiveMap.core.domain.model.Floor;
+import org.mininuniver.interactiveMap.domain.model.Floor;
 
 import java.util.List;
 

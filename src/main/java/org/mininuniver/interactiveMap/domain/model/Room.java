@@ -17,9 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.core.domain.model;
+package org.mininuniver.interactiveMap.domain.model;
 
-import io.hypersistence.utils.hibernate.type.array.LongArrayType;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -27,34 +26,37 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
+import org.mininuniver.interactiveMap.api.dto.map.submodels.PointDTO;
 
-import java.util.Map;
+import java.util.List;
 
 @Setter
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "Nodes")
-@Schema(name = "NodeEntity", description = "Модель узла (entity)")
-public class Node {
+@Table(name = "Rooms")
+@Schema(name = "RoomEntity", description = "Модель комнаты (entity)")
+public class Room {
     @Version
-    @Column(name = "version")
+    @Column(name = "version", nullable = false)
     private Long version;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "floor_id")
     private Floor floor;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "node_id")
+    private Node node;
+
     @Column(columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)
-    private Map<String, Object> pos;
-
-    @Column(name = "neighbors", columnDefinition = "bigint[]")
-    @Type(LongArrayType.class)
-    private Long[] neighbors;
+    private List<PointDTO> points;
 
 }

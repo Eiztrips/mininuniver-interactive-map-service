@@ -17,26 +17,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.service.impl;
+package org.mininuniver.interactiveMap.domain.repository;
 
-import lombok.RequiredArgsConstructor;
-import org.mininuniver.interactiveMap.core.domain.repository.NodeRepository;
-import org.mininuniver.interactiveMap.api.dto.map.node.NodeDTO;
-import org.mininuniver.interactiveMap.service.ports.NodeService;
-import org.mininuniver.interactiveMap.mapper.NodeMapper;
-import org.springframework.stereotype.Service;
+import org.mininuniver.interactiveMap.domain.model.Stairs;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class NodeServiceImpl implements NodeService {
+@Repository
+public interface StairsRepository extends JpaRepository<Stairs, Long>{
+    List<Stairs> findByFloorId(Long floorId);
 
-    private final NodeMapper nodeMapper;
-    private final NodeRepository nodeRepository;
-
-    public List<NodeDTO> getAllNodes() {
-        return nodeMapper.toDtoList(nodeRepository.findAll());
-    }
-
+    void deleteAllByFloorId(Long floorId);
 }

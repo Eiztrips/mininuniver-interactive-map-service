@@ -17,19 +17,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.core.exeption;
+package org.mininuniver.interactiveMap.domain.repository;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.mininuniver.interactiveMap.domain.model.Node;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class BusinessLogicException extends RuntimeException {
+import java.util.List;
 
-    public BusinessLogicException(String message) {
-        super(message);
-    }
+@Repository
+public interface NodeRepository extends JpaRepository<Node, Long>{
+    List<Node> findByFloorId(Long floorId);
+    List<Node> findAll();
 
-    public BusinessLogicException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    void deleteAllByFloorId(Long floorId);
 }

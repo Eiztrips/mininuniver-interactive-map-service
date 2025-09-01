@@ -17,22 +17,25 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.core.domain.repository;
+package org.mininuniver.interactiveMap.config;
 
-import org.mininuniver.interactiveMap.core.domain.model.Room;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
-import java.util.List;
-import java.util.Optional;
+@Configuration
+public class ValidationConfig {
 
-@Repository
-public interface RoomRepository extends JpaRepository<Room, Long> {
+    @Bean
+    public LocalValidatorFactoryBean validator() {
+        return new LocalValidatorFactoryBean();
+    }
 
-    List<Room> findByFloorId(Long floorId);
-    List<Room> findAll();
-    Optional<Room> findByName(String name);
-    Optional<Room> findById(Long id);
-
-    void deleteAllByFloorId(Long floorId);
+    @Bean
+    public MethodValidationPostProcessor methodValidationPostProcessor() {
+        MethodValidationPostProcessor processor = new MethodValidationPostProcessor();
+        processor.setValidator(validator());
+        return processor;
+    }
 }

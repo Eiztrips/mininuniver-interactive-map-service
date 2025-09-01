@@ -17,18 +17,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.core.domain.repository;
+package org.mininuniver.interactiveMap.domain.repository;
 
-import org.mininuniver.interactiveMap.core.domain.model.Node;
+import org.mininuniver.interactiveMap.domain.model.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface NodeRepository extends JpaRepository<Node, Long>{
-    List<Node> findByFloorId(Long floorId);
-    List<Node> findAll();
+public interface RoomRepository extends JpaRepository<Room, Long> {
+
+    List<Room> findByFloorId(Long floorId);
+    List<Room> findAll();
+    Optional<Room> findByName(String name);
+    Optional<Room> findById(Long id);
 
     void deleteAllByFloorId(Long floorId);
 }

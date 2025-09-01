@@ -17,7 +17,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.security.config;
+package org.mininuniver.interactiveMap.config;
 
 import org.mininuniver.interactiveMap.security.JwtExceptionHandlerFilter;
 import org.mininuniver.interactiveMap.security.JwtFilter;

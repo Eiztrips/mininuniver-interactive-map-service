@@ -31,11 +31,11 @@ import org.mininuniver.interactiveMap.api.dto.map.MapDTO;
 import org.mininuniver.interactiveMap.api.dto.map.floor.FloorShortDTO;
 import org.mininuniver.interactiveMap.api.dto.map.node.NodeDTO;
 import org.mininuniver.interactiveMap.api.dto.map.room.RoomDTO;
-import org.mininuniver.interactiveMap.core.domain.model.Node;
-import org.mininuniver.interactiveMap.core.domain.model.Room;
-import org.mininuniver.interactiveMap.service.ports.FloorService;
-import org.mininuniver.interactiveMap.service.ports.NodeService;
-import org.mininuniver.interactiveMap.service.ports.RoomService;
+import org.mininuniver.interactiveMap.domain.model.Node;
+import org.mininuniver.interactiveMap.domain.model.Room;
+import org.mininuniver.interactiveMap.service.FloorService;
+import org.mininuniver.interactiveMap.service.NodeService;
+import org.mininuniver.interactiveMap.service.RoomService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

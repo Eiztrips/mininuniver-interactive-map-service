@@ -34,7 +34,7 @@ dependencies {
     implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.7.5")
 
     // PostgreSQL driver
-    runtimeOnly("org.postgresql:postgresql")
+    implementation ("org.postgresql:postgresql:42.7.7")
 
     // JSON Web Token (JJWT full setup)
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
@@ -56,6 +56,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
 }
 
 tasks.withType<Test> {

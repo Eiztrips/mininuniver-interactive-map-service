@@ -21,9 +21,8 @@ package org.mininuniver.interactiveMap.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import org.mininuniver.interactiveMap.api.dto.map.room.RoomDTO;
-import org.mininuniver.interactiveMap.core.domain.model.Room;
+import org.mininuniver.interactiveMap.domain.model.Room;
 
 import java.util.List;
 

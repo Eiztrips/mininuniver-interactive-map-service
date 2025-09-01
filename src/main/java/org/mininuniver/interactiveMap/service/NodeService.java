@@ -17,20 +17,25 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.mininuniver.interactiveMap.service.ports;
+package org.mininuniver.interactiveMap.service;
 
-import jakarta.validation.Valid;
-import org.mininuniver.interactiveMap.api.dto.map.MapDTO;
-import org.mininuniver.interactiveMap.api.dto.map.floor.FloorShortDTO;
-import org.springframework.validation.annotation.Validated;
+import lombok.RequiredArgsConstructor;
+import org.mininuniver.interactiveMap.domain.repository.NodeRepository;
+import org.mininuniver.interactiveMap.api.dto.map.node.NodeDTO;
+import org.mininuniver.interactiveMap.mapper.NodeMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Validated
-public interface FloorService {
-    MapDTO getMapData(int number);
-    MapDTO updateFloorData(int number, @Valid MapDTO mapDTO);
-    MapDTO createFloor(int number, @Valid MapDTO mapDTO);
-    List<FloorShortDTO> getAllFloors();
-    void deleteFloor(int number);
+@Service
+@RequiredArgsConstructor
+public class NodeService {
+
+    private final NodeMapper nodeMapper;
+    private final NodeRepository nodeRepository;
+
+    public List<NodeDTO> getAllNodes() {
+        return nodeMapper.toDtoList(nodeRepository.findAll());
+    }
+
 }
