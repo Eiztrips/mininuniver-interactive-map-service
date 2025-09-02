@@ -25,19 +25,20 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.mininuniver.interactiveMap.api.dto.map.MapDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.mininuniver.interactiveMap.service.FloorService;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/admin")
 @Tag(name = "Admin API", description = "API для администраторов")
 public class AdminController {
 
-    @Autowired
-    private FloorService floorService;
+    private final FloorService floorService;
 
     @Operation(summary = "Изменить/добавить данные этажа по номеру")
     @ApiResponses(value = {
