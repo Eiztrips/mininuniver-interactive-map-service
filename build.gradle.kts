@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.mininuniver"
-version = "0.1.1-SNAPSHOT"
+version = "0.2.1-SNAPSHOT"
 
 java {
     toolchain {

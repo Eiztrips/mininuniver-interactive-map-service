@@ -31,6 +31,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,23 +52,40 @@ public class SecurityConfig {
     @Value("${admin.password:secret_password}")
     private String adminPassword;
 
+    @Value("${app.mode:prod}")
+    private String appMode;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, UserDetailsService userDetailsService, JwtUtil jwtUtil) throws Exception {
-        http
-                .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/map/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/v3/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(loginRateLimitFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(jwtFilter(userDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        if ("dev".equals(appMode)) {
+            http
+                    .cors(Customizer.withDefaults())
+                    .csrf(AbstractHttpConfigurer::disable)
+                    .authorizeHttpRequests(authz -> authz
+                            .requestMatchers("/**").permitAll()
+                            .anyRequest().authenticated()
+                    )
+                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .addFilterBefore(new JwtExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(loginRateLimitFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterAt(jwtFilter(userDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        } else {
+            http
+                    .cors(Customizer.withDefaults())
+                    .csrf(AbstractHttpConfigurer::disable)
+                    .authorizeHttpRequests(authz -> authz
+                            .requestMatchers("/api/map/**").permitAll()
+                            .requestMatchers("/swagger-ui/**").permitAll()
+                            .requestMatchers("/v3/**").permitAll()
+                            .requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                            .anyRequest().authenticated()
+                    )
+                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .addFilterBefore(new JwtExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(loginRateLimitFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterAt(jwtFilter(userDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        }
 
         return http.build();
     }
